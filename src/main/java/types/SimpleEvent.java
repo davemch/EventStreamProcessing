@@ -12,10 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * check rules for POJO types:
- * https://ci.apache.org/projects/flink/flink-docs-stable/dev/types_serialization.html#flinks-typeinformation-class
+ * SimpleEvent is a POJO wrapper for GDELT events read from csv-files.
  */
 public class SimpleEvent {
+    // Cheers to Java's verbosity :D
     private final String globalEventId;
     private final Date   date;
     private final String a1Code;
@@ -429,13 +429,9 @@ public class SimpleEvent {
      * Function to extract the time stamp from a SimpleEvent
      */
     public static class ExtractTimestamp extends AscendingTimestampExtractor<SimpleEvent> {
-        private static final long serialVersionUID = 1L;
-
         @Override
         public long extractAscendingTimestamp(SimpleEvent element) {
-            // TODO: Implement
-            //return element.getTimeStampMs();
-            return -1;
+            return element.getDate().getTime();
         }
     }
 
@@ -443,7 +439,6 @@ public class SimpleEvent {
      * This function select two fields from Gdelt as keys
      */
     public static class CountryAndEventCodeKeySelector implements KeySelector<SimpleEvent, Tuple2<String, String>> {
-
         @Override
         public Tuple2<String, String> getKey(SimpleEvent value) throws Exception {
             // TODO: Implement
@@ -452,7 +447,7 @@ public class SimpleEvent {
         }
     }
 
-    // TODO: Probably remove move this file..
+    // TODO: Probably move this to other file..
     /**
      * Aggregate number of mentions per window
      * input:

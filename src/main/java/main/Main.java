@@ -9,6 +9,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import parser.LineParser;
 import sources.ZipLoader;
 
+import java.util.Date;
+
 /**
  * Parameters to run:
  * --input ./src/main/resources/black-lives-matter
@@ -33,14 +35,11 @@ public class Main {
                 .flatMap(new LineParser())
                 .assignTimestampsAndWatermarks(new SimpleEvent.ExtractTimestamp());
 
-        //
-        // TODO: First filter GDELT events
-        //
-
         // Filter events
         eventStream
                 .filter(new Filters.SocialUnrestFilter())
                 .filter(new Filters.CountryFilter("USA"))
+                // TODO: .filter(new Filters.TimeFilter(new Date()))
                 .print();
 
         // Execute environment

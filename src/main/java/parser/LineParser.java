@@ -116,10 +116,22 @@ public class LineParser implements FlatMapFunction<String, SimpleEvent> {
     }
 
     private static double toDouble(String in) {
-        return in.isEmpty() ? 0 : Double.parseDouble(in);
+        // TODO: Only for debugging
+        System.out.println(in);
+        try {
+            return in.isEmpty() ? 0 : Double.parseDouble(in);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private static int toInt(String in) {
-        return in.isEmpty() ? 0 : Integer.parseInt(in);
+        // TODO: Only for debugging
+        System.out.println(in);
+        try {
+            return in.isEmpty() ? 0 : Integer.parseInt(in);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
