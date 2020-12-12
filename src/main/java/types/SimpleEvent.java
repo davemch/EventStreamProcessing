@@ -1,12 +1,21 @@
-package data;
+package types;
 
+import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple4;
+import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
+import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
+import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+import org.apache.flink.util.Collector;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * check rules for POJO types:
  * https://ci.apache.org/projects/flink/flink-docs-stable/dev/types_serialization.html#flinks-typeinformation-class
  */
-public class GDELTEventData {
+public class SimpleEvent {
 
     public String key;
 
@@ -36,9 +45,9 @@ public class GDELTEventData {
     private String ActionGeo_Lat;
     private String ActionGeo_Long;
 
-    public GDELTEventData(){}
+    public SimpleEvent(){}
 
-    public GDELTEventData(
+    public SimpleEvent(
             String key,
             String GlobalEventID,
             Date date,
@@ -162,4 +171,59 @@ public class GDELTEventData {
         //sb.append(ActionGeo_Long);
         return sb.toString();
     }
+
+    /**
+     * Function to extract the time stamp from a SimpleEvent
+     */
+    public static class ExtractTimestamp extends AscendingTimestampExtractor<SimpleEvent> {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public long extractAscendingTimestamp(SimpleEvent element) {
+            return element.getTimeStampMs();
+        }
+    }
+
+    /**
+     * This function select two fields from Gdelt as keys
+     */
+    public static class CountryAndEventCodeKeySelector implements KeySelector<SimpleEvent, Tuple2<String, String>> {
+
+        @Override
+        public Tuple2<String, String> getKey(SimpleEvent value) throws Exception {
+            return Tuple2.of(value.getActionGeo_CountryCode(), value.getEventRootCode());
+        }
+    }
+
+    // TODO: Probably remove move this file..
+    /**
+     * Aggregate number of mentions per window
+     * input:
+     *   GDELTEventData
+     * returns:
+     *   Tuple4<date, country-key, event-code-key, num-mentions per window>
+     */
+    public static class AggregateEventsPerCountryPerDay extends ProcessWindowFunction<SimpleEvent, Tuple4<String, String, String, Integer>, Tuple2<String, String>, TimeWindow> {
+        @Override
+        public void process(Tuple2<String, String> key, Context context, Iterable<SimpleEvent> iterable, Collector<Tuple4<String, String, String, Integer>> collector) throws Exception {
+            int mentions = 0;
+
+            for (SimpleEvent in: iterable) {
+                mentions = mentions + in.getNumMentions();
+                //System.out.println("    LINE: " + key + "  " + in.getTimeStampMs() + "  " + in.getFull_date() + "  " + date + "  " + in.getEventRootCode() + "  " + in.getNumMentions() + "  " + in.getAvgTone() + "  " + count + " " + " " + in.getActionGeo_Long() + " " + in.getActionGeo_Lat());
+            }
+            // a window has: context.window().getStart() and context.window().getEnd()
+            // here it is return the end time of the window
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date end = new Date(context.window().getEnd());
+
+            //Tuple4<date, country-key, event-code-key, num-mentions per window>
+            Tuple4<String, String, String, Integer> aggregatedEvent =
+                    new Tuple4<String, String, String, Integer>(sdf.format(end), key.f0, key.f1, mentions);
+            collector.collect(aggregatedEvent);
+        }
+    }
+
 }
+
+
