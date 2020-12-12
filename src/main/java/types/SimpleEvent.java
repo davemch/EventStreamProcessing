@@ -16,160 +16,413 @@ import java.util.Date;
  * https://ci.apache.org/projects/flink/flink-docs-stable/dev/types_serialization.html#flinks-typeinformation-class
  */
 public class SimpleEvent {
+    private final String globalEventId;
+    private final Date   date;
+    private final String a1Code;
+    private final String a1Name;
+    private final String a1CountryCode;
+    private final String a1KnownGroupCode;
+    private final String a1EthnicCode;
+    private final String a1Religion1Code;
+    private final String a1Religion2Code;
+    private final String a1Type1Code;
+    private final String a1Type2Code;
+    private final String a1Type3Code;
+    private final String a2Code;
+    private final String a2Name;
+    private final String a2CountryCode;
+    private final String a2KnownGroupCode;
+    private final String a2EthnicCode;
+    private final String a2Religion1Code;
+    private final String a2Religion2Code;
+    private final String a2Type1Code;
+    private final String a2Type2Code;
+    private final String a2Type3Code;
+    private final int    isRootEvent;
+    private final String eventCode;
+    private final String eventBaseCode;
+    private final String eventRootCode;
+    private final int    quadClass;
+    private final double goldsteinScale;
+    private final int    numMentions;
+    private final int    numSources;
+    private final int    numArticles;
+    private final double avgTone;
+    private final String a1GeoType;
+    private final String a1FullName;
+    private final String a1GCountryCode;
+    private final String a1Adm1Code;
+    private final double a1Lat;
+    private final double a1Long;
+    private final double a1FeatureID;
+    private final String a2GeoType;
+    private final String a2FullName;
+    private final String a2GCountryCode;
+    private final String a2Adm1Code;
+    private final double a2Lat;
+    private final double a2Long;
+    private final double a2FeatureID;
+    private final String actGeoType;
+    private final String actFullName;
+    private final String actGCountryCode;
+    private final String actAdm1Code;
+    private final String actLat;
+    private final String actLong;
+    private final String actFeatureID;
+    private final String dateAdded;
+    private final String a1FullLocation;
+    private final String a2FullLocation;
+    private final String actFullLocation;
 
-    public String key;
-
-  /*  "GlobalEventID","Day","MonthYear","Year","FractionDate","Actor1Code","Actor1Name","Actor1CountryCode",
-            "Actor1KnownGroupCode","Actor1EthnicCode","Actor1Religion1Code","Actor1Religion2Code","Actor1Type1Code",
-            "Actor1Type2Code","Actor1Type3Code","Actor2Code","Actor2Name","Actor2CountryCode",
-            "Actor2KnownGroupCode","Actor2EthnicCode","Actor2Religion1Code","Actor2Religion2Code","Actor2Type1Code",
-            "Actor2Type2Code","Actor2Type3Code","IsRootEvent","EventCode","EventBaseCode","EventRootCode","QuadClass",
-            "GoldsteinScale","NumMentions","NumSources","NumArticles","AvgTone","Actor1Geo_Type","Actor1Geo_Fullname",
-            "Actor1Geo_CountryCode","Actor1Geo_ADM1Code","Actor1Geo_Lat","Actor1Geo_Long","Actor1Geo_FeatureID",
-            "Actor2Geo_Type","Actor2Geo_Fullname","Actor2Geo_CountryCode","Actor2Geo_ADM1Code","Actor2Geo_Lat",
-            "Actor2Geo_Long","Actor2Geo_FeatureID","ActionGeo_Type","ActionGeo_Fullname","ActionGeo_CountryCode",
-            "ActionGeo_ADM1Code","ActionGeo_Lat","ActionGeo_Long","ActionGeo_FeatureID","DATEADDED","SOURCEURL"*/
-
-    private String GlobalEventID;
-    // TODO: adapt the right variable types
-    private Date date;
-    private String full_date;
-    private String MonthYear;
-    private String EventBaseCode;
-    private String EventRootCode;
-    private float GoldsteinScale;
-    private int NumMentions;
-    private float AvgTone;
-    private String ActionGeo_Fullname;
-    private String ActionGeo_CountryCode;
-    private String ActionGeo_Lat;
-    private String ActionGeo_Long;
-
-    public SimpleEvent(){}
-
-    public SimpleEvent(
-            String key,
-            String GlobalEventID,
-            Date date,
-            String full_date,
-            String MonthYear,
-            String EventBaseCode,
-            String EventRootCode,
-            float GoldsteinScale,
-            int NumMentions,
-            float AvgTone,
-            String ActionGeo_Fullname,
-            String ActionGeo_CountryCode,
-            String ActionGeo_Lat,
-            String ActionGeo_Long) {
-        this.key = key;
-        this.GlobalEventID = GlobalEventID;
-        // TODO: adapt the right variable types
-        this.date = date;
-        this.full_date = full_date;
-        this.MonthYear = MonthYear;
-        this.EventBaseCode = EventBaseCode;
-        this.EventRootCode = EventRootCode;
-        this.GoldsteinScale = GoldsteinScale;
-        this.NumMentions = NumMentions;
-        this.AvgTone = AvgTone;
-        this.ActionGeo_Fullname = ActionGeo_Fullname;
-        this.ActionGeo_CountryCode = ActionGeo_CountryCode;
-        this.ActionGeo_Lat = ActionGeo_Lat;
-        this.ActionGeo_Long = ActionGeo_Long;
+    public String getGlobalEventId() {
+        return globalEventId;
     }
 
     public Date getDate() {
         return date;
     }
-    public long getTimeStampMs() { return date.getTime(); }
 
-    public String getKey() {
-        return key;
+    public String getA1Code() {
+        return a1Code;
     }
-    public void setKey(String val) { this.key = val; }
+
+    public String getA1Name() {
+        return a1Name;
+    }
+
+    public String getA1CountryCode() {
+        return a1CountryCode;
+    }
+
+    public String getA1KnownGroupCode() {
+        return a1KnownGroupCode;
+    }
+
+    public String getA1EthnicCode() {
+        return a1EthnicCode;
+    }
+
+    public String getA1Religion1Code() {
+        return a1Religion1Code;
+    }
+
+    public String getA1Religion2Code() {
+        return a1Religion2Code;
+    }
+
+    public String getA1Type1Code() {
+        return a1Type1Code;
+    }
+
+    public String getA1Type2Code() {
+        return a1Type2Code;
+    }
+
+    public String getA1Type3Code() {
+        return a1Type3Code;
+    }
+
+    public String getA2Code() {
+        return a2Code;
+    }
+
+    public String getA2Name() {
+        return a2Name;
+    }
+
+    public String getA2CountryCode() {
+        return a2CountryCode;
+    }
+
+    public String getA2KnownGroupCode() {
+        return a2KnownGroupCode;
+    }
+
+    public String getA2EthnicCode() {
+        return a2EthnicCode;
+    }
+
+    public String getA2Religion1Code() {
+        return a2Religion1Code;
+    }
+
+    public String getA2Religion2Code() {
+        return a2Religion2Code;
+    }
+
+    public String getA2Type1Code() {
+        return a2Type1Code;
+    }
+
+    public String getA2Type2Code() {
+        return a2Type2Code;
+    }
+
+    public String getA2Type3Code() {
+        return a2Type3Code;
+    }
+
+    public int getIsRootEvent() {
+        return isRootEvent;
+    }
 
     public String getEventBaseCode() {
-        return EventBaseCode;
-    }
-    public void setEventBaseCode(String eventBaseCode) {
-        EventBaseCode = eventBaseCode;
+        return eventBaseCode;
     }
 
-    public String getEventRootCode() {return EventRootCode; }
-    public void setEventRootCode(String eventRootCode) {
-        EventRootCode = eventRootCode;
+    public String getEventCode() {
+        return eventCode;
     }
 
-    public float getGoldsteinScale() {
-        return GoldsteinScale;
+    public String getEventRootCode() {
+        return eventRootCode;
     }
-    public void setGoldsteinScale(float goldsteinScale) {
-        GoldsteinScale = goldsteinScale;
+
+    public int getQuadClass() {
+        return quadClass;
+    }
+
+    public double getGoldsteinScale() {
+        return goldsteinScale;
     }
 
     public int getNumMentions() {
-        return NumMentions;
-    }
-    public void setNumMentions(int numMentions) {
-        NumMentions = numMentions;
+        return numMentions;
     }
 
-    public float getAvgTone() {
-        return AvgTone;
-    }
-    public void setAvgTone(float avgTone) {
-        AvgTone = avgTone;
+    public int getNumSources() {
+        return numSources;
     }
 
-    public String getActionGeo_CountryCode() {
-        return ActionGeo_CountryCode;
-    }
-    public void setActionGeo_CountryCode(String actionGeo_CountryCode) { ActionGeo_CountryCode = actionGeo_CountryCode; }
-
-    public String getActionGeo_Lat() {
-        return ActionGeo_Lat;
-    }
-    public void setActionGeo_Lat(String actionGeo_Lat) {
-        ActionGeo_Lat = actionGeo_Lat;
+    public int getNumArticles() {
+        return numArticles;
     }
 
-    public String getActionGeo_Long() {
-        return ActionGeo_Long;
-    }
-    public void setActionGeo_Long(String actionGeo_Long) {
-        ActionGeo_Long = actionGeo_Long;
+    public double getAvgTone() {
+        return avgTone;
     }
 
-    public String getActionGeo_Fullname() {
-        return ActionGeo_Fullname;
-    }
-    public void setActionGeo_Fullname(String actionGeo_Fullname) {
-        ActionGeo_Fullname = actionGeo_Fullname;
+    public String getA1GeoType() {
+        return a1GeoType;
     }
 
-    public String getFull_date() {
-        return full_date;
+    public String getA1FullName() {
+        return a1FullName;
     }
-    public void setFull_date(String full_date) {
-        this.full_date = full_date;
+
+    public String getA1GCountryCode() {
+        return a1GCountryCode;
+    }
+
+    public String getA1Adm1Code() {
+        return a1Adm1Code;
+    }
+
+    public double getA1Lat() {
+        return a1Lat;
+    }
+
+    public double getA1Long() {
+        return a1Long;
+    }
+
+    public double getA1FeatureID() {
+        return a1FeatureID;
+    }
+
+    public String getA2GeoType() {
+        return a2GeoType;
+    }
+
+    public String getA2FullName() {
+        return a2FullName;
+    }
+
+    public String getA2GCountryCode() {
+        return a2GCountryCode;
+    }
+
+    public String getA2Adm1Code() {
+        return a2Adm1Code;
+    }
+
+    public double getA2Lat() {
+        return a2Lat;
+    }
+
+    public double getA2Long() {
+        return a2Long;
+    }
+
+    public double getA2FeatureID() {
+        return a2FeatureID;
+    }
+
+    public String getActGeoType() {
+        return actGeoType;
+    }
+
+    public String getActFullName() {
+        return actFullName;
+    }
+
+    public String getActGCountryCode() {
+        return actGCountryCode;
+    }
+
+    public String getActAdm1Code() {
+        return actAdm1Code;
+    }
+
+    public String getActLat() {
+        return actLat;
+    }
+
+    public String getActLong() {
+        return actLong;
+    }
+
+    public String getActFeatureID() {
+        return actFeatureID;
+    }
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public String getA1FullLocation() {
+        return a1FullLocation;
+    }
+
+    public String getA2FullLocation() {
+        return a2FullLocation;
+    }
+
+    public String getActFullLocation() {
+        return actFullLocation;
+    }
+
+    public SimpleEvent(
+            String globalEventId,
+            Date   date,
+            String a1Code,
+            String a1Name,
+            String a1CountryCode,
+            String a1KnownGroupCode,
+            String a1EthnicCode,
+            String a1Religion1Code,
+            String a1Religion2Code,
+            String a1Type1Code,
+            String a1Type2Code,
+            String a1Type3Code,
+            String a2Code,
+            String a2Name,
+            String a2CountryCode,
+            String a2KnownGroupCode,
+            String a2EthnicCode,
+            String a2Religion1Code,
+            String a2Religion2Code,
+            String a2Type1Code,
+            String a2Type2Code,
+            String a2Type3Code,
+            int    isRootEvent,
+            String eventCode,
+            String eventBaseCode,
+            String eventRootCode,
+            int    quadClass,
+            double goldsteinScale,
+            int    numMentions,
+            int    numSources,
+            int    numArticles,
+            double avgTone,
+            String a1GeoType,
+            String a1FullName,
+            String a1GCountryCode,
+            String a1Adm1Code,
+            double a1Lat,
+            double a1Long,
+            double a1FeatureID,
+            String a2GeoType,
+            String a2FullName,
+            String a2GCountryCode,
+            String a2Adm1Code,
+            double a2Lat,
+            double a2Long,
+            double a2FeatureID,
+            String actGeoType,
+            String actFullName,
+            String actGCountryCode,
+            String actAdm1Code,
+            String actLat,
+            String actLong,
+            String actFeatureID,
+            String dateAdded,
+            String a1FullLocation,
+            String a2FullLocation,
+            String actFullLocation
+    ) {
+        this.globalEventId = globalEventId;
+        this.date = date;
+        this.a1Code = a1Code;
+        this.a1Name = a1Name;
+        this.a1CountryCode = a1CountryCode;
+        this.a1KnownGroupCode = a1KnownGroupCode;
+        this.a1EthnicCode = a1EthnicCode;
+        this.a1Religion1Code = a1Religion1Code;
+        this.a1Religion2Code = a1Religion2Code;
+        this.a1Type1Code = a1Type1Code;
+        this.a1Type2Code = a1Type2Code;
+        this.a1Type3Code = a1Type3Code;
+        this.a2Code = a2Code;
+        this.a2Name = a2Name;
+        this.a2CountryCode = a2CountryCode;
+        this.a2KnownGroupCode = a2KnownGroupCode;
+        this.a2EthnicCode = a2EthnicCode;
+        this.a2Religion1Code = a2Religion1Code;
+        this.a2Religion2Code = a2Religion2Code;
+        this.a2Type1Code = a2Type1Code;
+        this.a2Type2Code = a2Type2Code;
+        this.a2Type3Code = a2Type3Code;
+        this.isRootEvent = isRootEvent;
+        this.eventCode = eventCode;
+        this.eventBaseCode = eventBaseCode;
+        this.eventRootCode = eventRootCode;
+        this.quadClass = quadClass;
+        this.goldsteinScale = goldsteinScale;
+        this.numMentions = numMentions;
+        this.numSources = numSources;
+        this.numArticles = numArticles;
+        this.avgTone = avgTone;
+        this.a1GeoType = a1GeoType;
+        this.a1FullName = a1FullName;
+        this.a1GCountryCode = a1GCountryCode;
+        this.a1Adm1Code = a1Adm1Code;
+        this.a1Lat = a1Lat;
+        this.a1Long = a1Long;
+        this.a1FeatureID = a1FeatureID;
+        this.a2GeoType = a2GeoType;
+        this.a2FullName = a2FullName;
+        this.a2GCountryCode = a2GCountryCode;
+        this.a2Adm1Code = a2Adm1Code;
+        this.a2Lat = a2Lat;
+        this.a2Long = a2Long;
+        this.a2FeatureID = a2FeatureID;
+        this.actGeoType = actGeoType;
+        this.actFullName = actFullName;
+        this.actGCountryCode = actGCountryCode;
+        this.actAdm1Code = actAdm1Code;
+        this.actLat = actLat;
+        this.actLong = actLong;
+        this.actFeatureID = actFeatureID;
+        this.dateAdded = dateAdded;
+        this.a1FullLocation = a1FullLocation;
+        this.a2FullLocation = a2FullLocation;
+        this.actFullLocation = actFullLocation;
     }
 
     public String toString(){
-        StringBuilder sb = new StringBuilder();
-        //sb.append(GlobalEventID).append(",");
-        //sb.append(date).append(",");
-        sb.append(full_date).append(",");
-        //sb.append(MonthYear).append(",");
-        //sb.append(EventBaseCode).append(",");
-        sb.append(EventRootCode).append(",");
-        //sb.append(GoldsteinScale).append(",");
-        sb.append(NumMentions).append(",");
-        sb.append(AvgTone).append(",");
-        sb.append(ActionGeo_CountryCode).append(",");
-        //sb.append(ActionGeo_Lat).append(",");
-        //sb.append(ActionGeo_Long);
-        return sb.toString();
+        // TODO: Implement
+        return "Not implemented";
     }
 
     /**
@@ -180,7 +433,9 @@ public class SimpleEvent {
 
         @Override
         public long extractAscendingTimestamp(SimpleEvent element) {
-            return element.getTimeStampMs();
+            // TODO: Implement
+            //return element.getTimeStampMs();
+            return -1;
         }
     }
 
@@ -191,7 +446,9 @@ public class SimpleEvent {
 
         @Override
         public Tuple2<String, String> getKey(SimpleEvent value) throws Exception {
-            return Tuple2.of(value.getActionGeo_CountryCode(), value.getEventRootCode());
+            // TODO: Implement
+            //return Tuple2.of(value.getActionGeo_CountryCode(), value.getEventRootCode());
+            return null;
         }
     }
 

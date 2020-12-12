@@ -40,6 +40,7 @@ public class Main {
         // Filter events
         eventStream
                 .filter(new Filters.SocialUnrestFilter())
+                .filter(new Filters.CountryFilter("USA"))
                 .print();
 
         // Execute environment
