@@ -41,8 +41,6 @@ public class ZipLoader implements SourceFunction<String> {
             return;
         }
 
-        System.out.println(" Number of files to process: " + pathList.size());
-
         // Open each file sequentially and provide line by line to sourceCollector
         String line;
         try {
@@ -86,7 +84,7 @@ public class ZipLoader implements SourceFunction<String> {
         List<Path> pathList = new ArrayList<>();
         File[] fileNames = fileDirectoryPath.listFiles();
 
-        // NOTE: We don't check for null here as Exception is caught in caller.
+        // NOTE: We don't check for null here as Exception is caught in caller
         for (File csv : fileNames) {
             pathList.add(csv.toPath());
         }
