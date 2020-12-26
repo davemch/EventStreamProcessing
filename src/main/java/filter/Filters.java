@@ -52,16 +52,16 @@ public class Filters {
      * time frame.
      */
     public static class TimeFilter implements FilterFunction<SimpleEvent> {
-        private final Date from, to;
+        private final Date start, end;
 
-        public TimeFilter(Date from, Date to) {
-            this.from = from;
-            this.to = to;
+        public TimeFilter(Date start, Date end) {
+            this.start = start;
+            this.end = end;
         }
 
         @Override
         public boolean filter(SimpleEvent event) throws Exception {
-            return event.getDate().after(from) && event.getDate().before(to);
+            return event.getDate().after(start) && event.getDate().before(end);
         }
     }
 }
