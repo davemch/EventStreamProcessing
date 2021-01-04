@@ -1,7 +1,6 @@
 package parser;
 
-import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
-import types.SimpleEvent;
+import types.Event;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 
@@ -9,10 +8,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class LineParser implements FlatMapFunction<String, SimpleEvent> {
+public class LineParser implements FlatMapFunction<String, Event> {
 
     @Override
-    public void flatMap(String line, Collector<SimpleEvent> collector) throws ParseException {
+    public void flatMap(String line, Collector<Event> collector) throws ParseException {
         String[] data = line.split("\\t");
 
         // TODO: No idea why its said everywhere to be 57|58.
@@ -23,7 +22,7 @@ public class LineParser implements FlatMapFunction<String, SimpleEvent> {
         //++ First we read each field
         //-- Column 0-24
         String globalEventId    = data[0];
-        Date   date             = new SimpleDateFormat("yyyMMdd").parse(data[1]);
+        Date   date             = new SimpleDateFormat("yyyyMMdd").parse(data[1]);
         // [2:5] are different time representation. We don't need them.
         // Action1
         String a1Code           = data[5];
@@ -98,7 +97,7 @@ public class LineParser implements FlatMapFunction<String, SimpleEvent> {
         // TODO: String source = data[60]
 
         //++ Now we can create the SimpleEvent POJO
-        SimpleEvent event = new SimpleEvent(globalEventId, date,
+        Event event = new Event(globalEventId, date,
                 a1Code, a1Name, a1CountryCode, a1KnownGroupCode, a1EthnicCode,
                 a1Religion1Code, a1Religion2Code, a1Type1Code, a1Type2Code, a1Type3Code,
                 a2Code, a2Name, a2CountryCode, a2KnownGroupCode, a2EthnicCode,
@@ -117,7 +116,7 @@ public class LineParser implements FlatMapFunction<String, SimpleEvent> {
 
     private static double toDouble(String in) {
         // TODO: Only for debugging
-        System.out.println(in);
+        //System.out.println(in);
         try {
             return in.isEmpty() ? 0 : Double.parseDouble(in);
         } catch (Exception e) {
@@ -127,7 +126,7 @@ public class LineParser implements FlatMapFunction<String, SimpleEvent> {
 
     private static int toInt(String in) {
         // TODO: Only for debugging
-        System.out.println(in);
+        //System.out.println(in);
         try {
             return in.isEmpty() ? 0 : Integer.parseInt(in);
         } catch (Exception e) {

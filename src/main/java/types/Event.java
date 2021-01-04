@@ -6,15 +6,16 @@ import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
 import org.apache.flink.util.Collector;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * SimpleEvent is a POJO wrapper for GDELT events read from csv-files.
+ * Event is a POJO wrapper for GDELT events read from csv-files.
  */
-public class SimpleEvent {
+public class Event {
     // Cheers to Java's verbosity :D
     private final String globalEventId;
     private final Date   date;
@@ -302,7 +303,7 @@ public class SimpleEvent {
         return actFullLocation;
     }
 
-    public SimpleEvent(
+    public Event(
             String globalEventId,
             Date   date,
             String a1Code,
@@ -420,17 +421,59 @@ public class SimpleEvent {
         this.actFullLocation = actFullLocation;
     }
 
+    @Override
     public String toString(){
-        // TODO: Implement
-        return "Not implemented";
+        // TODO: Implement!
+        return "Event: eventCode=" + this.eventCode + "; date=" + this.date.toString();
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+
+    /**
+     * Kafka Serializer
+     */
+    public static class Serializer implements KeyedSerializationSchema<Event> {
+        @Override
+        public byte[] serializeKey(Event event) {
+            return null;
+        }
+
+        @Override
+        public byte[] serializeValue(Event event) {
+            return event.toString().getBytes();
+        }
+
+        @Override
+        public String getTargetTopic(Event event) {
+            return null;
+        }
+    }
+
+    // TODO: Creator?
+
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // ------------------------------------------------------
 
     /**
      * Function to extract the time stamp from a SimpleEvent
      */
-    public static class ExtractTimestamp extends AscendingTimestampExtractor<SimpleEvent> {
+    public static class ExtractTimestamp extends AscendingTimestampExtractor<Event> {
         @Override
-        public long extractAscendingTimestamp(SimpleEvent element) {
+        public long extractAscendingTimestamp(Event element) {
             return element.getDate().getTime();
         }
     }
@@ -438,14 +481,18 @@ public class SimpleEvent {
     /**
      * This function select two fields from Gdelt as keys
      */
-    public static class CountryAndEventCodeKeySelector implements KeySelector<SimpleEvent, Tuple2<String, String>> {
+    public static class CountryAndEventCodeKeySelector implements KeySelector<Event, Tuple2<String, String>> {
         @Override
-        public Tuple2<String, String> getKey(SimpleEvent value) throws Exception {
+        public Tuple2<String, String> getKey(Event value) throws Exception {
             // TODO: Implement
             //return Tuple2.of(value.getActionGeo_CountryCode(), value.getEventRootCode());
             return null;
         }
     }
+
+    // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
     // TODO: Probably move this to other file..
     /**
@@ -455,12 +502,12 @@ public class SimpleEvent {
      * returns:
      *   Tuple4<date, country-key, event-code-key, num-mentions per window>
      */
-    public static class AggregateEventsPerCountryPerDay extends ProcessWindowFunction<SimpleEvent, Tuple4<String, String, String, Integer>, Tuple2<String, String>, TimeWindow> {
+    public static class AggregateEventsPerCountryPerDay extends ProcessWindowFunction<Event, Tuple4<String, String, String, Integer>, Tuple2<String, String>, TimeWindow> {
         @Override
-        public void process(Tuple2<String, String> key, Context context, Iterable<SimpleEvent> iterable, Collector<Tuple4<String, String, String, Integer>> collector) throws Exception {
+        public void process(Tuple2<String, String> key, Context context, Iterable<Event> iterable, Collector<Tuple4<String, String, String, Integer>> collector) throws Exception {
             int mentions = 0;
 
-            for (SimpleEvent in: iterable) {
+            for (Event in: iterable) {
                 mentions = mentions + in.getNumMentions();
                 //System.out.println("    LINE: " + key + "  " + in.getTimeStampMs() + "  " + in.getFull_date() + "  " + date + "  " + in.getEventRootCode() + "  " + in.getNumMentions() + "  " + in.getAvgTone() + "  " + count + " " + " " + in.getActionGeo_Long() + " " + in.getActionGeo_Lat());
             }

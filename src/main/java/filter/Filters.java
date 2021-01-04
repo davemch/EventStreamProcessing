@@ -1,7 +1,7 @@
 package filter;
 
 import org.apache.flink.api.common.functions.FilterFunction;
-import types.SimpleEvent;
+import types.Event;
 
 import java.util.Date;
 
@@ -10,9 +10,9 @@ public class Filters {
     /**
      * SocialUnrestFilter filters SimpleEvents based on the `EventRootCode`-field.
      */
-    public static class SocialUnrestFilter implements FilterFunction<SimpleEvent> {
+    public static class SocialUnrestFilter implements FilterFunction<Event> {
         @Override
-        public boolean filter(SimpleEvent event) throws Exception {
+        public boolean filter(Event event) throws Exception {
             String eventCode = event.getEventRootCode();
             String want = "01";
 
@@ -34,7 +34,7 @@ public class Filters {
      * CountryFilter filters SimpleEvents based on the `A1CountryCode`-field and
      * the given country code.
      */
-    public static class CountryFilter implements FilterFunction<SimpleEvent> {
+    public static class CountryFilter implements FilterFunction<Event> {
         private final String want;
 
         public CountryFilter(String country) {
@@ -42,7 +42,7 @@ public class Filters {
         }
 
         @Override
-        public boolean filter(SimpleEvent event) throws Exception {
+        public boolean filter(Event event) throws Exception {
             return event.getA1CountryCode().equals(want);
         }
     }
@@ -51,7 +51,7 @@ public class Filters {
      * TimeFilter filters SimpleEvents based on the `Date`-field and the given
      * time frame.
      */
-    public static class TimeFilter implements FilterFunction<SimpleEvent> {
+    public static class TimeFilter implements FilterFunction<Event> {
         private final Date start, end;
 
         public TimeFilter(Date start, Date end) {
@@ -60,7 +60,7 @@ public class Filters {
         }
 
         @Override
-        public boolean filter(SimpleEvent event) throws Exception {
+        public boolean filter(Event event) throws Exception {
             return event.getDate().after(start) && event.getDate().before(end);
         }
     }
