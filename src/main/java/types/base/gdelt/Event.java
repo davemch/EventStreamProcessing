@@ -1,4 +1,4 @@
-package types;
+package types.base.gdelt;
 
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;

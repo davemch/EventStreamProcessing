@@ -1,6 +1,6 @@
 package parser;
 
-import types.Event;
+import types.base.gdelt.Event;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 

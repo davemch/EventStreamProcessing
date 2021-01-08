@@ -1,4 +1,6 @@
 /**
+TODO: Rewrite docs
+
  A Flink Job sink data into Kafka, using the topic: gdeltdata
  this script:
  1. makes the connection to Kafka and consume data from that topic: gdeltdata
@@ -25,7 +27,7 @@ var Consumer = kafka.Consumer,
  client, [ { topic: kafka_topic, partition: 0 } ], { autoCommit: false });
 
 var server = http.createServer(function(request, response) {
- console.log(' Request recieved : ' + request.url);
+ console.log(' Request received : ' + request.url);
  response.writeHead(404);
  response.end();
 });

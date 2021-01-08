@@ -4,15 +4,16 @@ import filter.Filters;
 import kafka.Kafka;
 import org.apache.flink.cep.CEP;
 import org.apache.flink.cep.PatternStream;
-import types.Appeal;
-import types.Event;
+import types.base.*;
+import types.base.gdelt.Event;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import parser.LineParser;
 import sources.ZipLoader;
-import types.Refuse;
+
+import java.lang.reflect.AccessibleObject;
 
 /**
  * Parameters to run:
@@ -48,15 +49,39 @@ public class Main {
         // TODO: Afterwards use CEP methods to find patterns
         //eventStream.print();
 
-        // Check for Refuse Events
-        PatternStream<Event> refusePatternStream = CEP.pattern(eventStream, Refuse.getPattern());
-        DataStream<Refuse> refuseDataStream = refusePatternStream.select(new Refuse.Creator());
-        refuseDataStream.print();
+        // -- Check for basic SocialUnrestEvents
 
         // Check for Appeal Events
         PatternStream<Event> appealPatternStream = CEP.pattern(eventStream, Appeal.getPattern());
         DataStream<Appeal> appealDataStream = appealPatternStream.select(new Appeal.Creator());
         appealDataStream.print();
+        appealDataStream.addSink(kafka.appealProducer);
+
+        // Check for Accusation Events
+        PatternStream<Event> accusationPatternStream = CEP.pattern(eventStream, Accusation.getPattern());
+        DataStream<Accusation> accusationDataStream = accusationPatternStream.select(new Accusation.Creator());
+        accusationDataStream.print();
+        accusationDataStream.addSink(kafka.accusationProducer);
+
+        // Check for Refuse Events
+        PatternStream<Event> refusePatternStream = CEP.pattern(eventStream, Refuse.getPattern());
+        DataStream<Refuse> refuseDataStream = refusePatternStream.select(new Refuse.Creator());
+        refuseDataStream.print();
+        refuseDataStream.addSink(kafka.refuseProducer);
+
+        // Check for Escalation Events
+        PatternStream<Event> escalationPatternStream = CEP.pattern(eventStream, Escalation.getPattern());
+        DataStream<Escalation> escalationDataStream = escalationPatternStream.select(new Escalation.Creator());
+        escalationDataStream.print();
+        escalationDataStream.addSink(kafka.escalationProducer);
+
+        // Check for Eruption Events
+        PatternStream<Event> eruptionPatternStream = CEP.pattern(eventStream, Refuse.getPattern());
+        DataStream<Eruption> eruptionDataStream = eruptionPatternStream.select(new Eruption.Creator());
+        eruptionDataStream.print();
+        eruptionDataStream.addSink(kafka.eruptionProducer);
+
+        // Check for
 
         // TODO: Last send to Kafka
         kafka.sink();
@@ -64,6 +89,4 @@ public class Main {
         // Execute environment
         env.execute("GDELT: Black-Lives-Matter");
     }
-
-
 }

@@ -1,26 +1,24 @@
-package types;
+package types.base;
 
 import org.apache.flink.cep.PatternSelectFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.IterativeCondition;
 import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
+import types.base.gdelt.Event;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class Refuse extends SocialUnrestEvent {
-    private final String eventCode;
-    private final Date date;
+public class Escalation extends SocialUnrestEvent {
 
-    public Refuse(String eventCode, Date date) {
-        this.eventCode = eventCode;
-        this.date = date;
+    public Escalation(String eventCode, Date date) {
+        super(eventCode, date);
     }
 
     @Override
     public String toString() {
-        return "Refuse event: eventCode=" + eventCode + "; date=" + date.toString();
+        return "Escalation event: eventCode=" + super.eventCode + "; date=" + super.date.toString();
     }
 
     @Override
@@ -42,7 +40,7 @@ public class Refuse extends SocialUnrestEvent {
                 .where(new IterativeCondition<Event>() {
                     @Override
                     public boolean filter(Event event, Context<Event> context) throws Exception {
-                        return event.getEventCode().equals("012");
+                        return event.getEventCode().equals("013");
                     }
                 });
     }
@@ -50,19 +48,19 @@ public class Refuse extends SocialUnrestEvent {
     /**
      * Kafka Serializer
      */
-    public static class Serializer implements KeyedSerializationSchema<Refuse> {
+    public static class Serializer implements KeyedSerializationSchema<Escalation> {
         @Override
-        public byte[] serializeKey(Refuse refuse) {
+        public byte[] serializeKey(Escalation escalation) {
             return null;
         }
 
         @Override
-        public byte[] serializeValue(Refuse refuse) {
-            return refuse.toString().getBytes();
+        public byte[] serializeValue(Escalation escalation) {
+            return escalation.toString().getBytes();
         }
 
         @Override
-        public String getTargetTopic(Refuse refuse) {
+        public String getTargetTopic(Escalation escalation) {
             return null;
         }
     }
@@ -70,12 +68,12 @@ public class Refuse extends SocialUnrestEvent {
     /**
      * Creator
      */
-    public static class Creator implements PatternSelectFunction<Event, Refuse> {
+    public static class Creator implements PatternSelectFunction<Event, Escalation> {
         @Override
-        public Refuse select(Map<String, List<Event>> map) throws Exception {
+        public Escalation select(Map<String, List<Event>> map) throws Exception {
             Event first = map.get("first").get(0);
 
-            return new Refuse(first.getEventCode(), first.getDate());
+            return new Escalation(first.getEventCode(), first.getDate());
         }
     }
 }
