@@ -16,13 +16,15 @@ import (
 // .zip-files time frame for Black Lives Matter:
 // 25.05.2020 - 25.08.2020 => 20200525_001500 - 20200825_001500
 //
+// We start one month before and end one month after
+//
 // The timeframe is 92 days, therefore we expect 92*24*4 = 8832 files.
 //                                                     ^
 //                                                     |> 4*15 min = 1 hour
 
 func main() {
-    timeStart := "20200525001500" // 25.05.2020
-    timeEnd := "20200825001500"   // 25.08.2020
+    timeStart := "20200425001500" // 25.04.2020
+    timeEnd := "20200925001500"   // 25.09.2020
 
     now, err := parseToRFC339(timeStart)
     if err != nil {
