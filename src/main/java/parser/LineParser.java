@@ -115,8 +115,6 @@ public class LineParser implements FlatMapFunction<String, Event> {
     }
 
     private static double toDouble(String in) {
-        // TODO: Only for debugging
-        //System.out.println(in);
         try {
             return in.isEmpty() ? 0 : Double.parseDouble(in);
         } catch (Exception e) {
@@ -125,8 +123,6 @@ public class LineParser implements FlatMapFunction<String, Event> {
     }
 
     private static int toInt(String in) {
-        // TODO: Only for debugging
-        //System.out.println(in);
         try {
             return in.isEmpty() ? 0 : Integer.parseInt(in);
         } catch (Exception e) {

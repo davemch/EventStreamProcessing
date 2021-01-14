@@ -1,5 +1,6 @@
 package main;
 
+import analytics.AggregateRefuses;
 import filter.Filters;
 import kafka.Kafka;
 import org.apache.flink.cep.CEP;
@@ -12,8 +13,6 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import parser.LineParser;
 import sources.ZipLoader;
-
-import java.lang.reflect.AccessibleObject;
 
 /**
  * Parameters to run:
@@ -41,6 +40,7 @@ public class Main {
         DataStream<Event> eventStream = rawLine
                 .flatMap(new LineParser())
                 .assignTimestampsAndWatermarks(new Event.ExtractTimestamp())
+                // TODO: .window(TumblingEventWindow)?????
                 // ... and filter them
                 .filter(new Filters.SocialUnrestFilter())
                 .filter(new Filters.CountryFilter("USA"));
@@ -69,6 +69,11 @@ public class Main {
         refuseDataStream.print();
         refuseDataStream.addSink(kafka.refuseProducer);
 
+        //refuseDataStream
+        //        .keyBy()
+        //        .window()
+        //        .process(new AggregateRefuses.AggregateRefusesPerDay());
+
         // Check for Escalation Events
         PatternStream<Event> escalationPatternStream = CEP.pattern(eventStream, Escalation.getPattern());
         DataStream<Escalation> escalationDataStream = escalationPatternStream.select(new Escalation.Creator());
@@ -76,7 +81,7 @@ public class Main {
         escalationDataStream.addSink(kafka.escalationProducer);
 
         // Check for Eruption Events
-        PatternStream<Event> eruptionPatternStream = CEP.pattern(eventStream, Refuse.getPattern());
+        PatternStream<Event> eruptionPatternStream = CEP.pattern(eventStream, Eruption.getPattern());
         DataStream<Eruption> eruptionDataStream = eruptionPatternStream.select(new Eruption.Creator());
         eruptionDataStream.print();
         eruptionDataStream.addSink(kafka.eruptionProducer);

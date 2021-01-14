@@ -14,11 +14,11 @@ public class Kafka {
     // GDELT Event
     public FlinkKafkaProducer<Event> simpleEventProducer;
     // Basic SocialUnrestEvents
-    public FlinkKafkaProducer<Appeal> appealProducer;
+    public FlinkKafkaProducer<Appeal>     appealProducer;
     public FlinkKafkaProducer<Accusation> accusationProducer;
-    public FlinkKafkaProducer<Refuse> refuseProducer;
+    public FlinkKafkaProducer<Refuse>     refuseProducer;
     public FlinkKafkaProducer<Escalation> escalationProducer;
-    public FlinkKafkaProducer<Eruption> eruptionProducer;
+    public FlinkKafkaProducer<Eruption>   eruptionProducer;
 
     public Kafka(String topic, String serverName, String serverLocation) {
         this.TOPIC = topic;
