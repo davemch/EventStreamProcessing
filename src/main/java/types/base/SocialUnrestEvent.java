@@ -1,22 +1,59 @@
 package types.base;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public abstract class SocialUnrestEvent {
+    final String eventDescription;
     final String eventCode;
     final Date date;
+    int numMentions;
+    double a1Lat;
+    double a1Long;
+    double avgTone;
 
-    public SocialUnrestEvent(String eventCode, Date date) {
+    public SocialUnrestEvent(String eventDescription, String eventCode, Date date,
+                             int numMentions, double a1Lat, double a1Long, double avgTone) {
+        this.eventDescription = eventDescription;
         this.eventCode = eventCode;
         this.date = date;
+        this.numMentions = numMentions;
+        this.a1Lat = a1Lat;
+        this.a1Long  = a1Long;
+        this.avgTone = avgTone;
     }
 
     @Override
-    public abstract String toString();
+    public String toString() {
+        return String.format("{\n" +
+                        "\"eventDescription\": \"%s\", \n" +
+                        "\"eventCode\": \"%s\", \n" +
+                        "\"date:\": \"%s\", \n" +
+                        "\"numMentions:\": \"%d\", \n" +
+                        "\"a1Lat\": \"%f\", \n" +
+                        "\"a1Long\": \"%f\", \n" +
+                        "\"avgTone\": \"%f\" \n" +
+                        "}",
+                eventDescription,
+                eventCode,
+                date.toString(),
+                numMentions,
+                a1Lat,
+                a1Long,
+                avgTone);
+    }
+
+
+    /**
+     * Returns the hash code of bytes returned by toString method.
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.toString().getBytes());
+    };
 
     @Override
-    public abstract int hashCode();
-
-    @Override
-    public abstract boolean equals(Object obj);
+    public boolean equals(Object obj) {
+        return false;
+    }
 }

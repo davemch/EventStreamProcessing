@@ -12,23 +12,9 @@ import java.util.Map;
 
 public class Accusation extends SocialUnrestEvent {
 
-    public Accusation(String eventCode, Date date) {
-        super(eventCode, date);
-    }
-
-    @Override
-    public String toString() {
-        return "Accusation event: eventCode=" + super.eventCode + "; date=" + super.date.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return false;
+    public Accusation(String eventCode, Date date, int numMentions,
+                      double a1Lat, double a1Long, double avgTone) {
+        super("accusation", eventCode, date, numMentions, a1Lat, a1Long, avgTone);
     }
 
     /**
@@ -73,7 +59,8 @@ public class Accusation extends SocialUnrestEvent {
         public Accusation select(Map<String, List<Event>> map) throws Exception {
             Event first = map.get("first").get(0);
 
-            return new Accusation(first.getEventCode(), first.getDate());
+            return new Accusation(first.getEventCode(), first.getDate(), first.getNumMentions(),
+                    first.getA1Lat(), first.getA1Long(), first.getAvgTone());
         }
     }
 }

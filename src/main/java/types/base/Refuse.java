@@ -12,23 +12,9 @@ import java.util.Map;
 
 public class Refuse extends SocialUnrestEvent {
 
-    public Refuse(String eventCode, Date date) {
-        super(eventCode, date);
-    }
-
-    @Override
-    public String toString() {
-        return "Refuse event: eventCode=" + super.eventCode + "; date=" + super.date.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return false;
+    public Refuse(String eventCode, Date date, int numMentions,
+                      double a1Lat, double a1Long, double avgTone) {
+        super("refuse", eventCode, date, numMentions, a1Lat, a1Long, avgTone);
     }
 
     /**
@@ -73,7 +59,8 @@ public class Refuse extends SocialUnrestEvent {
         public Refuse select(Map<String, List<Event>> map) throws Exception {
             Event first = map.get("first").get(0);
 
-            return new Refuse(first.getEventCode(), first.getDate());
+            return new Refuse(first.getEventCode(), first.getDate(), first.getNumMentions(),
+                    first.getA1Lat(), first.getA1Long(), first.getAvgTone());
         }
     }
 }

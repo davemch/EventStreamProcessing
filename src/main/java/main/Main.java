@@ -86,8 +86,6 @@ public class Main {
         eruptionDataStream.print();
         eruptionDataStream.addSink(kafka.eruptionProducer);
 
-        // Check for
-
         // TODO: Last send to Kafka
         kafka.sink();
 

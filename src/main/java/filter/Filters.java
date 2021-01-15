@@ -13,6 +13,7 @@ public class Filters {
     public static class SocialUnrestFilter implements FilterFunction<Event> {
         @Override
         public boolean filter(Event event) throws Exception {
+            // TODO: Before war getEventRootCode. Check if still working
             String eventCode = event.getEventRootCode();
             String want = "01";
 

@@ -12,7 +12,7 @@ public class Kafka {
 
     // -- Producers
     // GDELT Event
-    public FlinkKafkaProducer<Event> simpleEventProducer;
+    //public FlinkKafkaProducer<Event> simpleEventProducer;
     // Basic SocialUnrestEvents
     public FlinkKafkaProducer<Appeal>     appealProducer;
     public FlinkKafkaProducer<Accusation> accusationProducer;
@@ -26,11 +26,13 @@ public class Kafka {
     }
 
     public Kafka initProducers() {
+        /*
         this.simpleEventProducer = new FlinkKafkaProducer<Event>(
                 this.TOPIC,
                 new Event.Serializer(),
                 this.properties,
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+         */
 
         this.appealProducer = new FlinkKafkaProducer<Appeal>(
                 this.TOPIC,

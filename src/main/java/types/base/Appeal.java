@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class Appeal extends SocialUnrestEvent {
 
-    public Appeal(String eventCode, Date date) {
-        super(eventCode, date);
+    public Appeal(String eventCode, Date date, int numMentions,
+                  double a1Lat, double a1Long, double avgTone) {
+        super("appeal", eventCode, date, numMentions, a1Lat, a1Long, avgTone);
     }
-
 
     @Override
     public String toString() {
-        return "Appeal event: eventCode=" + super.eventCode + "; date=" + super.date.toString();
+        return super.toString();
     }
 
     @Override
@@ -74,7 +74,8 @@ public class Appeal extends SocialUnrestEvent {
         public Appeal select(Map<String, List<Event>> map) throws Exception {
             Event first = map.get("first").get(0);
 
-            return new Appeal(first.getEventCode(), first.getDate());
+            return new Appeal(first.getEventCode(), first.getDate(), first.getNumMentions(),
+                    first.getA1Lat(), first.getA1Long(), first.getAvgTone());
         }
     }
 }
