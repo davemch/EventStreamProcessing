@@ -16,15 +16,22 @@ import (
 // .zip-files time frame for Black Lives Matter:
 // 25.05.2020 - 25.08.2020 => 20200525_001500 - 20200825_001500
 //
-// We start one month before and end one month after
+// We start one month earlier and stop one month later to have a better
+// overview of the changes during the Black Lives Matter movement.
 //
-// The timeframe is 92 days, therefore we expect 92*24*4 = 8832 files.
-//                                                     ^
-//                                                     |> 4*15 min = 1 hour
+// We start one month before and end one month after.
 
 func main() {
     timeStart := "20200425001500" // 25.04.2020
     timeEnd := "20200925001500"   // 25.09.2020
+
+    directory := "files"
+
+    // Create directory to download files to
+    err := os.Mkdir(directory, 0755)
+    if err != nil {
+        log.Fatal(err)
+    }
 
     now, err := parseToRFC339(timeStart)
     if err != nil {
@@ -38,9 +45,7 @@ func main() {
 
     for !now.Equal(end) {
         // Download zip
-        if err = download(parseFromRFC339(now)); err != nil {
-            log.Fatal(err)
-        }
+        download(parseFromRFC339(now), directory)
 
         // Increase time
     	now = now.Add(time.Minute * 15) // GDELT is updated every 15 minutes
@@ -49,32 +54,29 @@ func main() {
 
 const urlStart = "http://data.gdeltproject.org/gdeltv2/"
 const urlEnd = ".export.CSV.zip"
-const path = "./files/"
 
 // download downloads the file.
-func download(now string) error {
+func download(now string, to string) {
     // Create empty file
-    file, err := os.Create(path + now + ".export.CSV.zip")
+    file, err := os.Create(to + "/" + now + ".export.CSV.zip")
     if err != nil {
-        return err
+        log.Fatal(err)
     }
 
     // Download content
     client := http.Client{}
     resp, err := client.Get(urlStart + now + urlEnd)
     if err != nil {
-        return err
+        log.Fatal(err)
     }
     defer resp.Body.Close()
 
     // Copy content to file
     _, err = io.Copy(file, resp.Body)
     if err != nil {
-        return err
+        log.Fatal(err)
     }
     defer file.Close()
-
-    return nil
 }
 
 // parseToRFC339 parses the GDELT time format to RFC339.
