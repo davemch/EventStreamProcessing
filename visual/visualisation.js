@@ -1,4 +1,12 @@
 
+/* TODO: 
+        - Display Graph
+        - Display Tooltip on Map
+        - Clean / Structure Code
+        - Bind Colors to Event-Code
+        - Bind Size to Circle-Size
+
+
 /*  This visualization was made possible by modifying code provided by:
 
 Scott Murray, Choropleth example from "Interactive Data Visualization for the Web" 
@@ -34,7 +42,6 @@ var path = d3.geo.path()               // path generator that will convert GeoJS
 //Create SVG element and append map to the SVG
 var svg = d3.select("#map")
         
-
 
 // Load GeoJSON data and merge with states data
 d3.json("us-states.json", function(json) {
@@ -73,74 +80,89 @@ svg.selectAll("path")
 //       	  .attr("dy", ".35em")
 // 			.text(function(d) { return d; });
 			
-	
-var markers = [
-	{"long": "-81.717000", "lat": "27.833300"},
-	{"long": "-77.072600", "lat": "38.907300"},
-];
 
-svg.selectAll("myCircles")
-	.data(markers)
-	.enter()
-	.append("circle")
-		.attr("cx", function(d){ return projection([d.long, d.lat])[0] })
-		.attr("cy", function(d){ return projection([d.long, d.lat])[1] })
-		.attr("r", 14)
-		.style("fill", "69b3a2")
-		.attr("stroke", "#69b3a2")
-		.attr("stroke-width", 3)
-		.attr("fill-opacity", .4)
-	});
+$.getJSON("out.json", function(data) {
 
-        // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    //CREATE GRAPH
+    // set the dimensions and margins of the graph
+    var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
-var svg2 = d3.select("#my_dataviz")
-  .append("svg")
+    // append the svg object to the body of the page
+    var svg2 = d3.select("#my_dataviz")
+    .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  .append("g")
+    .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
-
-//Read the data
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
-
-  // When reading the csv, I must format variables:
-  function(d){
-    return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
-  },
-
-  // Now I can use this dataset:
-  function(data) {
-
-    // Add X axis --> it is a date format
+  
+              // Add X axis --> it is a date format
     var x = d3.scaleTime()
-      .domain(d3.extent(data, function(d) { return d.date; }))
-      .range([ 0, width ]);
-    svg2.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+    .domain(d3.extent(data, function(d) { return d.date; }))
+    .range([ 0, width ]);
+  svg2.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
 
-    // Add Y axis
-    var y = d3.scaleLinear()
-      .domain([0, d3.max(data, function(d) { return +d.value; })])
-      .range([ height, 0 ]);
-    svg2.append("g")
-      .call(d3.axisLeft(y));
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 1000])
+    .range([ height, 0 ]);
+  svg2.append("g")
+    .call(d3.axisLeft(y));
 
-    // Add the line
+
+  //CREATE THE MAP
+  svg.selectAll("circles").data(data).enter();
+  
+  //iterate over the data, this needs to be changed because with kafka this will be done on the fly
+	for(var i = 0; i < 100; i++){ 
+    if(projection([data[i].a1Long, data[i].a1Lat]) === null){ //Catch faulty GeoData
+      continue;
+    }
+
+    //Put the circle on the Map
+		svg
+		.append("circle")
+		.attr("cx", projection([data[i].a1Long, data[i].a1Lat])[0])
+		.attr("cy", projection([data[i].a1Long, data[i].a1Lat])[1])
+		.attr("r", 5)
+    .style("fill", "red")
+    .attr("title","test")
+		// .attr("stroke", "#69b3a2")
+		// .attr("stroke-width", 3)
+    .attr("fill-opacity", .4)
+    
+
+    //CREATE THE GRAPH PATH
     svg2.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .x(function(d) { return x(d.date) })
-        .y(function(d) { return y(d.value) })
-        )
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()
+      .x(function(d) { return x(data[i].date) })
+      .y(function(d) { return y(data[i].numMentions) })
+      )
+
+
+    //Add Data to Timeline
+    var tr = $("<tr>");
+    var eventTD = $("<td>")
+    var dateTD = $("<td>")
+    var toneTD = $("<td>")
+    dateTD.html(data[i].date)
+    eventTD.html(data[i].eventDescription)
+    toneTD.html(data[i].avgTone)
+    tr.append(dateTD);
+    tr.append(eventTD);
+    tr.append(toneTD);
+    $("#timeline_table").append(tr)
+
+	}
+	});
 
 })
+

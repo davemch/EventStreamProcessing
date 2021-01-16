@@ -1,4 +1,10 @@
+body{
+    font-family: 'Noto Sans', sans-serif;
+}
 
+h2{
+    padding-top: 75px;
+}
 .header{
     position: fixed;
     top: 0;
@@ -8,7 +14,7 @@
     display: flex;
     justify-content: space-between;
     flex-flow: row;
-    padding: 10px;
+    padding: 5px 10px 5px 10px;
     background-color: white;
 }
 
@@ -16,7 +22,7 @@
     box-shadow: 0px 0px 3px 0px rgb(0,0,0,0.5);
 }
 .content-wrapper{
-    margin-top: 175px;
+    margin-top: 0px;
 }
 
 .header-title{
@@ -25,7 +31,7 @@
 .header-right{
     width: 40%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 
@@ -57,6 +63,28 @@ div.tooltip {
 }
 
 #map {
-    width: 100%;
+    width: 50%;
     height: 520px;
+}
+
+#map_dataviz{
+    display: flex;
+    justify-content: center;
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+    border: black;
+    border-style: solid;
+    text-align: center;
+    border-spacing:5em;
+}
+
+tr{
+    border-bottom: 1px solid black;
+}
+
+td{
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
