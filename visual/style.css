@@ -1,0 +1,62 @@
+
+.header{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row;
+    padding: 10px;
+    background-color: white;
+}
+
+.bottom-shadow{
+    box-shadow: 0px 0px 3px 0px rgb(0,0,0,0.5);
+}
+.content-wrapper{
+    margin-top: 175px;
+}
+
+.header-title{
+    width: 40%;
+}
+.header-right{
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* On mouse hover, lighten state color */
+path:hover {
+	/*fill-opacity: .7;*/
+}
+
+/* Style for Custom Tooltip */
+div.tooltip {   
+ 	position: absolute;           
+	text-align: center;           
+	width: 60px;                  
+	height: 28px;                 
+	padding: 2px;             
+	font: 12px sans-serif;        
+	background: white;   
+	border: 0px;      
+	border-radius: 8px;           
+	pointer-events: none;         
+}
+        
+        
+/* Legend Position Style */
+.legend {
+	position:absolute;
+	left:800px;
+	top:350px;
+}
+
+#map {
+    width: 100%;
+    height: 520px;
+}
