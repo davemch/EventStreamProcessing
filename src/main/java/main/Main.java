@@ -1,6 +1,5 @@
 package main;
 
-import analytics.AggregateRefuses;
 import filter.Filters;
 import kafka.Kafka;
 import org.apache.flink.cep.CEP;
@@ -16,7 +15,7 @@ import sources.ZipLoader;
 
 /**
  * Parameters to run:
- * --input ./src/main/resources/black-lives-matter
+ *   --input ./downloader/files/ (or wherever you downloaded GDELT's .zip-files to)
  */
 public class Main {
     public static void main(String[] args) throws Exception {

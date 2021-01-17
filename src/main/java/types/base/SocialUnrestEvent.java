@@ -28,8 +28,8 @@ public abstract class SocialUnrestEvent {
         return String.format("{\n" +
                         "\"eventDescription\": \"%s\", \n" +
                         "\"eventCode\": \"%s\", \n" +
-                        "\"date:\": \"%s\", \n" +
-                        "\"numMentions:\": \"%d\", \n" +
+                        "\"date\": \"%s\", \n" +
+                        "\"numMentions\": \"%d\", \n" +
                         "\"a1Lat\": \"%f\", \n" +
                         "\"a1Long\": \"%f\", \n" +
                         "\"avgTone\": \"%f\" \n" +
