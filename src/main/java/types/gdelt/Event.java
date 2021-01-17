@@ -1,4 +1,4 @@
-package types.base.gdelt;
+package types.gdelt;
 
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
 
@@ -6,16 +6,6 @@ import java.util.Date;
 
 /**
  * Event is a POJO wrapper for GDELT events read from csv-files.
- *
- *
- * Moving Average
- * 2 months for BLM download -> DONE, need to download again
- *
- * To Frontend: JSON, include:
- *  - numMentions
- *  - actLong oder a1Long?
- *  - actLat oder a1Lat?
- *  - avgTone
  */
 public class Event {
     private final Date   date;

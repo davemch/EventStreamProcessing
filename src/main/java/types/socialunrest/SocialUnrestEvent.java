@@ -1,4 +1,4 @@
-package types.base;
+package types.socialunrest;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -7,10 +7,10 @@ public abstract class SocialUnrestEvent {
     final String eventDescription;
     final String eventCode;
     final Date date;
-    int numMentions;
-    double a1Lat;
-    double a1Long;
-    double avgTone;
+    final int numMentions;
+    final double a1Lat;
+    final double a1Long;
+    final double avgTone;
 
     public SocialUnrestEvent(String eventDescription, String eventCode, Date date,
                              int numMentions, double a1Lat, double a1Long, double avgTone) {
@@ -54,6 +54,10 @@ public abstract class SocialUnrestEvent {
 
     @Override
     public boolean equals(Object obj) {
-        return false;
+        if (obj instanceof SocialUnrestEvent) {
+            return this.hashCode() == obj.hashCode();
+        } else {
+            return false;
+        }
     }
 }

@@ -1,10 +1,10 @@
-package types.base;
+package types.socialunrest;
 
 import org.apache.flink.cep.PatternSelectFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.IterativeCondition;
 import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
-import types.base.gdelt.Event;
+import types.gdelt.Event;
 
 import java.util.Date;
 import java.util.List;

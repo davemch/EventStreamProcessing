@@ -1,8 +1,7 @@
 package kafka;
 
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import types.base.*;
-import types.base.gdelt.Event;
+import types.socialunrest.*;
 
 import java.util.Properties;
 
@@ -65,10 +64,5 @@ public class Kafka {
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
 
         return this;
-    }
-
-    // TODO: Sink "stuff" to Kafka
-    public void sink() {
-
     }
 }

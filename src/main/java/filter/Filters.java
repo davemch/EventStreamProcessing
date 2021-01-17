@@ -1,7 +1,7 @@
 package filter;
 
 import org.apache.flink.api.common.functions.FilterFunction;
-import types.base.gdelt.Event;
+import types.gdelt.Event;
 
 import java.util.Date;
 
@@ -17,22 +17,12 @@ public class Filters {
             String eventCode = event.getEventRootCode();
             String want = "01";
 
-            /*
-            String[] socialUnrestCodes = {
-                    "010", // Demand
-                    "011", // Disapprove
-                    "012", // Reject
-                    "013", // Threaten
-                    "014"  // Protest
-            };
-             */
-
             return eventCode.equals(want);
         }
     }
 
     /**
-     * CountryFilter filters SimpleEvents based on the `A1CountryCode`-field and
+     * CountryFilter filters Events based on the `A1CountryCode`-field and
      * the given country code.
      */
     public static class CountryFilter implements FilterFunction<Event> {
@@ -49,6 +39,8 @@ public class Filters {
     }
 
     /**
+     * TODO: This is unused as the downloader tool downloads the required timeframe. We leave it here for possible future use.
+     *
      * TimeFilter filters SimpleEvents based on the `Date`-field and the given
      * time frame.
      */

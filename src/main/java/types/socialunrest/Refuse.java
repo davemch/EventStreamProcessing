@@ -1,20 +1,20 @@
-package types.base;
+package types.socialunrest;
 
 import org.apache.flink.cep.PatternSelectFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.IterativeCondition;
 import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
-import types.base.gdelt.Event;
+import types.gdelt.Event;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class Eruption extends SocialUnrestEvent {
+public class Refuse extends SocialUnrestEvent {
 
-    public Eruption(String eventCode, Date date, int numMentions,
+    public Refuse(String eventCode, Date date, int numMentions,
                       double a1Lat, double a1Long, double avgTone) {
-        super("eruption", eventCode, date, numMentions, a1Lat, a1Long, avgTone);
+        super("refuse", eventCode, date, numMentions, a1Lat, a1Long, avgTone);
     }
 
     /**
@@ -26,7 +26,7 @@ public class Eruption extends SocialUnrestEvent {
                 .where(new IterativeCondition<Event>() {
                     @Override
                     public boolean filter(Event event, Context<Event> context) throws Exception {
-                        return event.getEventCode().equals("014");
+                        return event.getEventCode().equals("012");
                     }
                 });
     }
@@ -34,19 +34,19 @@ public class Eruption extends SocialUnrestEvent {
     /**
      * Kafka Serializer
      */
-    public static class Serializer implements KeyedSerializationSchema<Eruption> {
+    public static class Serializer implements KeyedSerializationSchema<Refuse> {
         @Override
-        public byte[] serializeKey(Eruption eruption) {
+        public byte[] serializeKey(Refuse refuse) {
             return null;
         }
 
         @Override
-        public byte[] serializeValue(Eruption eruption) {
-            return eruption.toString().getBytes();
+        public byte[] serializeValue(Refuse refuse) {
+            return refuse.toString().getBytes();
         }
 
         @Override
-        public String getTargetTopic(Eruption eruption) {
+        public String getTargetTopic(Refuse refuse) {
             return null;
         }
     }
@@ -54,12 +54,12 @@ public class Eruption extends SocialUnrestEvent {
     /**
      * Creator
      */
-    public static class Creator implements PatternSelectFunction<Event, Eruption> {
+    public static class Creator implements PatternSelectFunction<Event, Refuse> {
         @Override
-        public Eruption select(Map<String, List<Event>> map) throws Exception {
+        public Refuse select(Map<String, List<Event>> map) throws Exception {
             Event first = map.get("first").get(0);
 
-            return new Eruption(first.getEventCode(), first.getDate(), first.getNumMentions(),
+            return new Refuse(first.getEventCode(), first.getDate(), first.getNumMentions(),
                     first.getA1Lat(), first.getA1Long(), first.getAvgTone());
         }
     }
