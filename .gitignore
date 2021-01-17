@@ -1,2 +1,5 @@
 .idea/
 target/
+src/main/resources
+visual/node_modules/
+visual/package-lock.json

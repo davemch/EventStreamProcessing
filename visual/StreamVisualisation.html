@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="out.json"></script>
+</head>
+<body>
+
+    <div class="header bottom-shadow">
+        <h3 class="header-title">Stream Event Processing</h3>
+        <div class="header-right">
+            <a href="#usamap">Map</a>
+            <a href="#graphs">Graphs</a>
+            <a href="#timeline">Timeline</a>
+        </div>
+    </div>
+
+
+    <div class="content-wrapper">
+        <h2 id="usamap"></h2>
+        <div id="map_dataviz">
+            <svg id="map"></svg>
+        </div>
+
+
+
+    <h2 id="graphs" title="TEST">Graphs</h2>
+    <div id="my_dataviz"></div>
+
+    <h2 id="timeline">Timeline</h2>
+
+    <table id="timeline_table">
+        <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>Avg. Tone</th>
+        </tr>
+    </table>
+    </div>
+
+<script src="visualisation.js"></script>
+</body>
+</html>
