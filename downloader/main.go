@@ -18,8 +18,6 @@ import (
 //
 // We start one month earlier and stop one month later to have a better
 // overview of the changes during the Black Lives Matter movement.
-//
-// We start one month before and end one month after.
 
 func main() {
     timeStart := "20200425001500" // 25.04.2020

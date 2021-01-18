@@ -1,5 +1,9 @@
 package types.socialunrest;
 
+import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.api.java.tuple.Tuple2;
+import types.gdelt.Event;
+
 import java.util.Arrays;
 import java.util.Date;
 
@@ -36,7 +40,7 @@ public abstract class SocialUnrestEvent {
                         "}",
                 eventDescription,
                 eventCode,
-                date.toString(),
+                date.getTime(),
                 numMentions,
                 a1Lat,
                 a1Long,
@@ -58,6 +62,17 @@ public abstract class SocialUnrestEvent {
             return this.hashCode() == obj.hashCode();
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Function to define the eventDescription and the date as key
+     */
+    public static class SocialUnrestEventKeySelector implements KeySelector<SocialUnrestEvent, Tuple2<String, Date>> {
+
+        @Override
+        public Tuple2<String, Date> getKey(SocialUnrestEvent value) throws Exception {
+            return Tuple2.of(value.eventDescription, value.date);
         }
     }
 }

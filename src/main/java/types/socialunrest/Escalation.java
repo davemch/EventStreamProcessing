@@ -1,5 +1,7 @@
 package types.socialunrest;
 
+import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.cep.PatternSelectFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.IterativeCondition;
@@ -61,6 +63,17 @@ public class Escalation extends SocialUnrestEvent {
 
             return new Escalation(first.getEventCode(), first.getDate(), first.getNumMentions(),
                     first.getA1Lat(), first.getA1Long(), first.getAvgTone());
+        }
+    }
+
+    /**
+     * Function to define the eventDescription and the date as key
+     */
+    public static class EscalationKeySelector implements KeySelector<Escalation, Tuple2<String, Date>> {
+
+        @Override
+        public Tuple2<String, Date> getKey(Escalation value) throws Exception {
+            return Tuple2.of(value.eventDescription, value.date);
         }
     }
 }
