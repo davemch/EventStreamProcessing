@@ -1,5 +1,7 @@
 package types.socialunrest;
 
+import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.cep.PatternSelectFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.IterativeCondition;
@@ -32,6 +34,15 @@ public class Eruption extends SocialUnrestEvent {
     }
 
     /**
+     * Moving average to count eruption/etc events
+     * moving average of one week and count per week and show per day
+     *
+     * if extreme take as reference and look what happened with other events
+     *
+     * what happened 1. may(before and after)
+     */
+
+    /**
      * Kafka Serializer
      */
     public static class Serializer implements KeyedSerializationSchema<Eruption> {
@@ -61,6 +72,17 @@ public class Eruption extends SocialUnrestEvent {
 
             return new Eruption(first.getEventCode(), first.getDate(), first.getNumMentions(),
                     first.getA1Lat(), first.getA1Long(), first.getAvgTone());
+        }
+    }
+
+    /**
+     * Function to define the eventDescription and the date as key
+     */
+    public static class EruptionKeySelector implements KeySelector<Eruption, Tuple2<String, Date>> {
+
+        @Override
+        public Tuple2<String, Date> getKey(Eruption value) throws Exception {
+            return Tuple2.of(value.eventDescription, value.date);
         }
     }
 }

@@ -1,5 +1,7 @@
 package types.gdelt;
 
+import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
 
 import java.util.Date;

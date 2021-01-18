@@ -1,6 +1,7 @@
 package kafka;
 
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
+import types.aggregate.AggregateAppealEvent;
 import types.socialunrest.*;
 
 import java.util.Properties;
@@ -10,8 +11,7 @@ public class Kafka {
     private final Properties properties = new Properties();
 
     // -- Producers
-    // GDELT Event
-    //public FlinkKafkaProducer<Event> simpleEventProducer;
+
     // Basic SocialUnrestEvents
     public FlinkKafkaProducer<Appeal>     appealProducer;
     public FlinkKafkaProducer<Accusation> accusationProducer;
@@ -19,20 +19,16 @@ public class Kafka {
     public FlinkKafkaProducer<Escalation> escalationProducer;
     public FlinkKafkaProducer<Eruption>   eruptionProducer;
 
+    // Aggregate Events
+    public FlinkKafkaProducer<AggregateAppealEvent> aggregateAppealProducer;
+
     public Kafka(String topic, String serverName, String serverLocation) {
         this.TOPIC = topic;
         this.properties.setProperty(serverName, serverLocation);
     }
 
     public Kafka initProducers() {
-        /*
-        this.simpleEventProducer = new FlinkKafkaProducer<Event>(
-                this.TOPIC,
-                new Event.Serializer(),
-                this.properties,
-                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
-         */
-
+        // Basic SocialUnrestEvents
         this.appealProducer = new FlinkKafkaProducer<Appeal>(
                 this.TOPIC,
                 new Appeal.Serializer(),
@@ -62,6 +58,14 @@ public class Kafka {
                 new Eruption.Serializer(),
                 this.properties,
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+
+        // Aggregate Events
+        this.aggregateAppealProducer = new FlinkKafkaProducer<AggregateAppealEvent>(
+                this.TOPIC,
+                new AggregateAppealEvent.Serializer(),
+                this.properties,
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE
+        );
 
         return this;
     }

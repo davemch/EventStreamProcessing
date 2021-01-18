@@ -74,10 +74,10 @@ public class ZipLoader implements SourceFunction<String> {
                 }
 
                 if (fileEmpty) {
-                    System.out.println("Skip empty file: " + path.toString());
+                    //System.out.println("Skip empty file: " + path.toString());
                     continue;
                 }
-                System.out.println("Read file: " + path.toString());
+                //System.out.println("Read file: " + path.toString());
 
                 // Unzip file and provide content in BufferedReader
                 ZipFile zipFile = new ZipFile(path.toString());

@@ -39,6 +39,7 @@ public class LineParser implements FlatMapFunction<String, Event> {
         try {
             return in.isEmpty() ? 0 : Double.parseDouble(in);
         } catch (Exception e) {
+            //System.out.println("Exception in LineParser.toDouble() for String in: " + in);
             return 0;
         }
     }
@@ -47,6 +48,7 @@ public class LineParser implements FlatMapFunction<String, Event> {
         try {
             return in.isEmpty() ? 0 : Integer.parseInt(in);
         } catch (Exception e) {
+            //System.out.println("Exception in LineParser.toInt() for String in: " + in);
             return 0;
         }
     }

@@ -13,7 +13,6 @@ public class Filters {
     public static class SocialUnrestFilter implements FilterFunction<Event> {
         @Override
         public boolean filter(Event event) throws Exception {
-            // TODO: Before war getEventRootCode. Check if still working
             String eventCode = event.getEventRootCode();
             String want = "01";
 
@@ -39,7 +38,8 @@ public class Filters {
     }
 
     /**
-     * TODO: This is unused as the downloader tool downloads the required timeframe. We leave it here for possible future use.
+     * TODO: This is unused as the downloader tool downloads the required timeframe.
+     *       We leave it here for possible future use.
      *
      * TimeFilter filters SimpleEvents based on the `Date`-field and the given
      * time frame.
