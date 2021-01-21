@@ -21,6 +21,7 @@ http://bl.ocks.org/mbostock/3888852  */
 //READ THE DATA
 d3.json("out.json", function(data) {
 
+  console.log(data)
     //CREATE GRAPH
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -85,7 +86,8 @@ svg2.append("path")
       return x(parseDate(d.endDate))
     })
     .y(function(d) { 
-      return y(d.amount ) 
+      console.log(d);
+      return y(d.amount) 
     })
     .curve(d3.curveLinear)
     );
@@ -243,8 +245,10 @@ svg2.append("path")
     })
     .curve(d3.curveLinear)
     );
+
 })
-  
+
+
 function drawMap() {
   //Width and height of map
 var width = 960;
@@ -295,3 +299,57 @@ function drawCircles(data){
     .style("fill", "red")
     .attr("fill-opacity", .4)
 }
+
+function webSocketInvoke() {
+
+    if ("WebSocket" in window) {
+        console.log("WebSocket is supported by your Browser!");
+        var webSocket = new WebSocket("ws://localhost:8080/","echo-protocol");
+
+        webSocket.onopen = function() {
+            console.log("Connection created");
+        };
+
+        var n = 0;
+        var nMax = 1;  // using the first value to initialise the diagrams
+        webSocket.onmessage = function (evt) {
+            // from the socket connection
+
+            var received_msg = evt.data;
+            console.log(received_msg);
+            //received_msg = received_msg.replace("(","");
+            //received_msg = received_msg.replace(")","");
+            var value = received_msg.split(",");
+            //var d = new Date(val[2]);
+
+            /*if(n>nMax) {
+                if(val[0] == "Lufttemperatur") {
+                    console.log("       n:"+n+"  received_msg: "+  received_msg);
+                    sources[0].values.push({ date: d, signal: Number(val[1]) });
+                    refreshChart();
+                }
+                if(val[0] == "MALufttemperatur") {
+                    console.log("       n:"+n+"  received_msg: "+  received_msg);
+                    sources[1].values.push({ date: d, signal: Number(val[1]) });
+                    refreshChart();
+                }
+            } else {
+                console.log("       n:"+n+"  received_msg: "+  received_msg + "   val[2]: " + val[2]);
+                // use the first value to initialise the diagrams
+                data[n] = {"date": val[2], "source1": Number(val[1]), "source2": Number(val[1])};
+                if(n==nMax) {  // I need at least two values for initialise
+                    initialization(data);
+                }
+                n = n+1;
+            }          */
+        };
+
+        webSocket.onclose = function() {
+            console.log("Connection closed");
+        };
+    } else {
+        alert("WebSocket NOT supported by your Browser!");
+    }
+}
+
+//webSocketInvoke();
