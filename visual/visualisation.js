@@ -17,41 +17,44 @@ http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
 
 Mike Bostock, Pie Chart Legend
 http://bl.ocks.org/mbostock/3888852  */
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+width = 460 - margin.left - margin.right,
+height = 400 - margin.top - margin.bottom;
+
+function accumulate(data) {
+  var daily;
+  var filtered = data.filter(function(d) {
+    return d.eventDescription === "escalation"
+  })
+  console.log(filtered);
+}
 
 //READ THE DATA
 d3.json("out.json", function(data) {
+  	accumulate(data);
 
-  console.log(data)
-    //CREATE GRAPH
-    // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+  var svg2 = d3.select("#my_dataviz")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
 
-    // append the svg object to the body of the page
-    var svg2 = d3.select("#my_dataviz")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-  
-    // Add X axis --> it is a date format
-    var x = d3.scaleTime()
-      .domain(d3.extent(data, d => d.date))
-      .range([0, width]);
+  // Add X axis --> it is a date format
+  var x = d3.scaleTime()
+    .domain(d3.extent(data, d => d.date))
+    .range([0, width]);
     svg2.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
 
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0, 3000])
-    .range([ height, 0 ]);
-  svg2.append("g")
-    .call(d3.axisLeft(y));
-
+// Add Y axis
+var y = d3.scaleLinear()
+  .domain([0, 3000])
+  .range([ height, 0 ]);
+svg2.append("g")
+  .call(d3.axisLeft(y));
 
 var weeklyAccusation = data.filter(function(d) {
   return d.hasOwnProperty("amount") && d.eventDescription === "accusation_aggregate"
@@ -75,7 +78,6 @@ var weeklyEscalation = data.filter(function(d) {
 
 
 var parseDate = d3.timeParse("%Q");
-
 svg2.append("path")
   .datum(weeklyAccusation)
   .attr("fill", "none")
@@ -153,13 +155,23 @@ svg2.append("path")
     );
 
     svg2.append("text")
-        .attr("x", (width / 2))             
+        .attr("x", (width / 4))             
         .attr("y", 2)
         .attr("text-anchor", "middle")  
         .style("font-size", "16px") 
         .style("text-decoration", "underline")  
         .text("All Events Weekly Avg.");
 
+      svg2.append("circle").attr("cx",width).attr("cy", 0).attr("r", 4).style("fill", "steelblue");
+      svg2.append("text").attr("x", width - 100).attr("y", 0).text("Weekly Accusation").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("circle").attr("cx",width).attr("cy", 10).attr("r", 4).style("fill", "brown");
+      svg2.append("text").attr("x", width - 100).attr("y", 10).text("Weekly Refuse").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("circle").attr("cx",width).attr("cy", 20).attr("r", 4).style("fill", "green");
+      svg2.append("text").attr("x", width - 100).attr("y", 20).text("Weekly Appeal").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("circle").attr("cx",width).attr("cy", 30).attr("r", 4).style("fill", "red");
+      svg2.append("text").attr("x", width - 100).attr("y", 30).text("Weekly Escalation").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("circle").attr("cx",width).attr("cy", 40).attr("r", 4).style("fill", "yellow");
+      svg2.append("text").attr("x", width - 100).attr("y", 40).text("Weekly Eruption").style("font-size", "10px").attr("alignment-baseline","middle")
 
       var dailyEscalation = data.filter(function(d) {
         return !d.hasOwnProperty("amount") && d.eventDescription === "escalation"
@@ -204,7 +216,6 @@ svg2.append("path")
         );
     
 
-
 /* EXAMPLE GRAPH */
   //Grundgerüst vom Graph
   var svgtest = d3.select("#my_dataviz")
@@ -246,8 +257,10 @@ svg2.append("path")
     .curve(d3.curveLinear)
     );
 
-})
+    svgtest.append("circle").attr("cx",width).attr("cy", 0).attr("r", 4).style("fill", "steelblue");
+    svgtest.append("text").attr("x", width - 100).attr("y", 0).text("Weekly Accusation").style("font-size", "10px").attr("alignment-baseline","middle")
 
+})
 
 function drawMap() {
   //Width and height of map
