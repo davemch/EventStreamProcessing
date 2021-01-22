@@ -17,26 +17,78 @@ http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
 
 Mike Bostock, Pie Chart Legend
 http://bl.ocks.org/mbostock/3888852  */
+
+var parseDate = d3.timeParse("%Q");
+
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
 width = 460 - margin.left - margin.right,
 height = 400 - margin.top - margin.bottom;
 
-function accumulate(data) {
-  var daily;
-  var filtered = data.filter(function(d) {
-    return d.eventDescription === "escalation"
-  })
-  console.log(filtered);
+function accumulate(array, data) {
+  if(array.length === 0){
+    console.log("ZERO")
+  } else {
+    array[0].push(data)
+  }
+  array.push(data)
 }
+
+
+function getDaily (data, event){
+  var dates = d3.nest()
+    .key(function(d) {return d.date; })
+    .entries(data.filter (function (d) {
+      return d.eventDescription === event
+    }))
+  console.log(dates);
+  
+  dates.forEach(function(date, index){
+    var sum = 0;
+    date.values.forEach(array => {
+      sum += +array.numMentions;
+    })
+    dates[index].sum = sum;
+  })
+
+  return dates;
+}
+
+/**
+ * 
+ * @param {Array} data 
+ * @param {Integer} time 
+ * @returns {Array} 
+ */
+function averageData (data, time) {
+  var mean = Array();
+  var n= 0;
+  var sum = 0;
+  for(var i=0; i < data.length; i++){
+    sum += data[i].sum;
+    if(i !== 0 && (i % time === 0)) {
+      mean[n] = {date: data[i].key, sum: sum/time}
+      n++;
+      sum = 0;
+    }
+  }
+
+  return mean;
+}
+
 
 //READ THE DATA
 d3.json("out.json", function(data) {
-  	accumulate(data);
+
+  drawGraph(data ,"refuse", 10);
+
 
   var svg2 = d3.select("#my_dataviz")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
+  .call(d3.zoom().on("zoom", function () {
+    svg2.attr("transform", d3.event.transform)
+  }))
   .append("g")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
@@ -76,8 +128,6 @@ var weeklyEscalation = data.filter(function(d) {
   return d.hasOwnProperty("amount") && d.eventDescription === "escalation_aggregate"
 });
 
-
-var parseDate = d3.timeParse("%Q");
 svg2.append("path")
   .datum(weeklyAccusation)
   .attr("fill", "none")
@@ -88,7 +138,7 @@ svg2.append("path")
       return x(parseDate(d.endDate))
     })
     .y(function(d) { 
-      console.log(d);
+
       return y(d.amount) 
     })
     .curve(d3.curveLinear)
@@ -173,54 +223,12 @@ svg2.append("path")
       svg2.append("circle").attr("cx",width).attr("cy", 40).attr("r", 4).style("fill", "yellow");
       svg2.append("text").attr("x", width - 100).attr("y", 40).text("Weekly Eruption").style("font-size", "10px").attr("alignment-baseline","middle")
 
-      var dailyEscalation = data.filter(function(d) {
-        return !d.hasOwnProperty("amount") && d.eventDescription === "escalation"
-      });
-        
-      var svg3 = d3.select("#my_dataviz")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-    
-      // Add X axis --> it is a date format
-      var x = d3.scaleTime()
-        .domain(d3.extent(data, d => d.date))
-        .range([0, width + 800]);
-      svg3.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-  
-    // Add Y axis
-    var y = d3.scaleLinear()
-      .domain([0, 80])
-      .range([ height, 0 ]);
-    svg3.append("g")
-      .call(d3.axisLeft(y));
-
-      svg3.append("path")
-      .datum(dailyEscalation)
-      .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .x(function(d) {
-            return x(parseDate(d.date))
-        })
-        .y(function(d) { 
-            return y(d.numMentions) 
-        })
-        .curve(d3.curveLinear)
-        );
-    
-
 /* EXAMPLE GRAPH */
   //Grundgerüst vom Graph
+  var dates = getDaily(data,"refuse")
   var svgtest = d3.select("#my_dataviz")
   .append("svg")
-  .attr("width", width + margin.left + margin.right)
+  .attr("width", 1080 + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform",
@@ -228,40 +236,95 @@ svg2.append("path")
 
   // Add X axis --> it is a date format
   var x = d3.scaleTime()
-    .domain(d3.extent(data, d => d.date))
-    .range([0, width]);
+    .domain(d3.extent(dates, d => d.key))
+    .range([0, 1080])
   svgtest.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x).ticks(d3.time.week));
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, 3000])
+    .domain([1000, 3000])
     .range([ height, 0 ]);
   svgtest.append("g")
     .call(d3.axisLeft(y));
 
   //Zeichnen der Linie
   svgtest.append("path")
-  .datum(weeklyAccusation) //Welche Daten soll die Linie plotten?
+  .datum(dates) //Welche Daten soll die Linie plotten?
   .attr("fill", "none")
   .attr("stroke", "steelblue") //Farbe der Linie
   .attr("stroke-width", 1.5)
   .attr("d", d3.line()
     .x(function(d) {
-      return x(parseDate(d.endDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein! 
+      return x(parseDate(d.key)) //Wert der x-Achse, ACHTUNG: Muss Date sein! 
     })
     .y(function(d) { 
-      return y(d.amount) //Wert der y-Achse
+      return y(d.sum) //Wert der y-Achse
     })
     .curve(d3.curveLinear)
     );
 
     svgtest.append("circle").attr("cx",width).attr("cy", 0).attr("r", 4).style("fill", "steelblue");
-    svgtest.append("text").attr("x", width - 100).attr("y", 0).text("Weekly Accusation").style("font-size", "10px").attr("alignment-baseline","middle")
+    svgtest.append("text").attr("x", width - 100).attr("y", 0).text("Daily Refuse").style("font-size", "10px").attr("alignment-baseline","middle")
 
 })
 
+
+function drawGraph(data, dataName, time) {
+
+  var dailyData = getDaily(data, dataName)
+  var svg = d3.select("#my_dataviz")
+  .append("svg")
+  .attr("width", 1080 + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+  // Add X axis --> it is a date format
+  var x = d3.scaleTime()
+    .domain(d3.extent(averageData(dailyData, time), d => d.date))
+    .range([0, 1080])
+    svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).ticks(d3.time.week));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 10000])
+
+  //.domain([d3.min(averageData(dailyData, time), d => d.sum), d3.max(averageData(dailyData, time), d => d.sum)])
+    .range([ height, 0 ]);
+    svg.append("g")
+    .call(d3.axisLeft(y));
+
+  //Zeichnen der Linie
+    addLine(svg, averageData(dailyData ,time) , x, y, "red");
+    addLine(svg, averageData(getDaily(data, "appeal") ,time) , x, y, "blue");
+    addLine(svg, averageData(getDaily(data, "accusation") ,time) , x, y, "green");
+    addLine(svg, averageData(getDaily(data, "escalation") ,time) , x, y, "orange");
+    addLine(svg, averageData(getDaily(data, "eruption") ,time) , x, y, "yellow");
+    svg.append("circle").attr("cx",width).attr("cy", 0).attr("r", 4).style("fill", "steelblue");
+    svg.append("text").attr("x", width - 100).attr("y", 0).text(time + " Day Mean" + dataName).style("font-size", "10px").attr("alignment-baseline","middle")
+}
+
+function addLine (svg, data, x, y, color) {
+  svg.append("path")
+  .datum(data) //Welche Daten soll die Linie plotten?
+  .attr("fill", "none")
+  .attr("stroke", color) //Farbe der Linie
+  .attr("stroke-width", 1.5)
+  .attr("d", d3.line()
+    .x(function(d) {
+      return x(parseDate(d.date)) //Wert der x-Achse, ACHTUNG: Muss Date sein! 
+    })
+    .y(function(d) { 
+      return y(d.sum) //Wert der y-Achse
+    })
+    .curve(d3.curveLinear)
+    );
+}
 function drawMap() {
   //Width and height of map
 var width = 960;
