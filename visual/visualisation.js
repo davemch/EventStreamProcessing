@@ -79,7 +79,7 @@ function averageData (data, time) {
 //READ THE DATA
 d3.json("out.json", function(data) {
 
-  drawGraph(data ,"refuse", 10);
+  drawGraph(data ,"refuse", 7);
 
 
   var svg2 = d3.select("#my_dataviz")
@@ -305,8 +305,17 @@ function drawGraph(data, dataName, time) {
     addLine(svg, averageData(getDaily(data, "accusation") ,time) , x, y, "green");
     addLine(svg, averageData(getDaily(data, "escalation") ,time) , x, y, "orange");
     addLine(svg, averageData(getDaily(data, "eruption") ,time) , x, y, "yellow");
-    svg.append("circle").attr("cx",width).attr("cy", 0).attr("r", 4).style("fill", "steelblue");
-    svg.append("text").attr("x", width - 100).attr("y", 0).text(time + " Day Mean" + dataName).style("font-size", "10px").attr("alignment-baseline","middle")
+    addLegend(svg, "refuse", time, "red",0)
+    addLegend(svg, "accusation", time, "blue",10)
+    addLegend(svg, "escalation", time, "green",20)
+    addLegend(svg, "eruption", time, "orange",30)
+    addLegend(svg, "appeal", time, "yellow",40)
+
+}
+
+function addLegend(svg, dataName, time, color, offset) {
+  svg.append("circle").attr("cx",width).attr("cy", offset).attr("r", 4).style("fill", color);
+  svg.append("text").attr("x", width - 100).attr("y", offset).text(time + " Day Mean" + dataName).style("font-size", "10px").attr("alignment-baseline","middle")
 }
 
 function addLine (svg, data, x, y, color) {
