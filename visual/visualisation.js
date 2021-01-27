@@ -79,6 +79,10 @@ function averageData (data, time) {
 //READ THE DATA
 d3.json("out.json", function(data) {
 
+  drawGraph(data ,"accusation", 7);
+  drawGraph(data ,"appeal", 7);
+  drawGraph(data ,"eruption", 7);
+  drawGraph(data ,"escalation", 7);
   drawGraph(data ,"refuse", 7);
 
 
@@ -210,18 +214,18 @@ svg2.append("path")
         .attr("text-anchor", "middle")  
         .style("font-size", "16px") 
         .style("text-decoration", "underline")  
-        .text("All Events Weekly Avg.");
+        .text("All Events Daily");
 
       svg2.append("circle").attr("cx",width).attr("cy", 0).attr("r", 4).style("fill", "steelblue");
-      svg2.append("text").attr("x", width - 100).attr("y", 0).text("Weekly Accusation").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("text").attr("x", width - 100).attr("y", 0).text("Accusation").style("font-size", "10px").attr("alignment-baseline","middle")
       svg2.append("circle").attr("cx",width).attr("cy", 10).attr("r", 4).style("fill", "brown");
-      svg2.append("text").attr("x", width - 100).attr("y", 10).text("Weekly Refuse").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("text").attr("x", width - 100).attr("y", 10).text("Refuse").style("font-size", "10px").attr("alignment-baseline","middle")
       svg2.append("circle").attr("cx",width).attr("cy", 20).attr("r", 4).style("fill", "green");
-      svg2.append("text").attr("x", width - 100).attr("y", 20).text("Weekly Appeal").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("text").attr("x", width - 100).attr("y", 20).text("Appeal").style("font-size", "10px").attr("alignment-baseline","middle")
       svg2.append("circle").attr("cx",width).attr("cy", 30).attr("r", 4).style("fill", "red");
-      svg2.append("text").attr("x", width - 100).attr("y", 30).text("Weekly Escalation").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("text").attr("x", width - 100).attr("y", 30).text("Escalation").style("font-size", "10px").attr("alignment-baseline","middle")
       svg2.append("circle").attr("cx",width).attr("cy", 40).attr("r", 4).style("fill", "yellow");
-      svg2.append("text").attr("x", width - 100).attr("y", 40).text("Weekly Eruption").style("font-size", "10px").attr("alignment-baseline","middle")
+      svg2.append("text").attr("x", width - 100).attr("y", 40).text("Eruption").style("font-size", "10px").attr("alignment-baseline","middle")
 
 /* EXAMPLE GRAPH */
   //Grundgerüst vom Graph
@@ -276,7 +280,7 @@ function drawGraph(data, dataName, time) {
   var dailyData = getDaily(data, dataName)
   var svg = d3.select("#my_dataviz")
   .append("svg")
-  .attr("width", 1080 + margin.left + margin.right)
+  .attr("width", 700 + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform",
@@ -285,37 +289,38 @@ function drawGraph(data, dataName, time) {
   // Add X axis --> it is a date format
   var x = d3.scaleTime()
     .domain(d3.extent(averageData(dailyData, time), d => d.date))
-    .range([0, 1080])
+    .range([0,700])
     svg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).ticks(d3.time.week));
+    .call(d3.axisBottom(x)
+    .ticks(d3.time.week));
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, 10000])
-
-  //.domain([d3.min(averageData(dailyData, time), d => d.sum), d3.max(averageData(dailyData, time), d => d.sum)])
+    .domain([d3.min(averageData(dailyData, time), d => d.sum), d3.max(averageData(dailyData, time), d => d.sum)])
     .range([ height, 0 ]);
     svg.append("g")
     .call(d3.axisLeft(y));
 
+    
+    svg.append("text")
+    .attr("x", (width / 4))             
+    .attr("y", 2)
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px") 
+    .style("text-decoration", "underline")  
+    .text(time + " Days Mean " + dataName);
+
   //Zeichnen der Linie
     addLine(svg, averageData(dailyData ,time) , x, y, "red");
-    addLine(svg, averageData(getDaily(data, "appeal") ,time) , x, y, "blue");
-    addLine(svg, averageData(getDaily(data, "accusation") ,time) , x, y, "green");
-    addLine(svg, averageData(getDaily(data, "escalation") ,time) , x, y, "orange");
-    addLine(svg, averageData(getDaily(data, "eruption") ,time) , x, y, "yellow");
-    addLegend(svg, "refuse", time, "red",0)
-    addLegend(svg, "accusation", time, "blue",10)
-    addLegend(svg, "escalation", time, "green",20)
-    addLegend(svg, "eruption", time, "orange",30)
-    addLegend(svg, "appeal", time, "yellow",40)
+    //addLegend(svg, dataName, "red", 0)
+
 
 }
 
-function addLegend(svg, dataName, time, color, offset) {
-  svg.append("circle").attr("cx",width).attr("cy", offset).attr("r", 4).style("fill", color);
-  svg.append("text").attr("x", width - 100).attr("y", offset).text(time + " Day Mean" + dataName).style("font-size", "10px").attr("alignment-baseline","middle")
+function addLegend(svg, dataName, color, offset) {
+  svg.append("circle").attr("cx", 700).attr("cy", offset).attr("r", 4).style("fill", color);
+  svg.append("text").attr("x", 700 - 120).attr("y", offset).text(dataName).style("font-size", "10px").attr("alignment-baseline","middle")
 }
 
 function addLine (svg, data, x, y, color) {
