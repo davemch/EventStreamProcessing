@@ -4,6 +4,7 @@ import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -78,6 +79,22 @@ public class Event {
             return element.getDate().getTime();
         }
     }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return "(" +
+                sdf.format(date) +
+                ", " + a1CountryCode +
+                ", " + eventCode +
+                ", " + eventRootCode +
+                ", " + numMentions +
+                ", " + avgTone +
+                ", " + a1Lat +
+                ", " + a1Long +
+                ')';
+    }
+
 }
 
 
