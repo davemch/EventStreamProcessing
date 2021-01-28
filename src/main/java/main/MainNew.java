@@ -7,6 +7,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.cep.CEP;
 import org.apache.flink.cep.PatternStream;
 import org.apache.flink.cep.functions.PatternProcessFunction;
+import org.apache.flink.cep.nfa.aftermatch.AfterMatchSkipStrategy;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.SimpleCondition;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
@@ -93,7 +94,11 @@ public class MainNew {
         // in middle we have any of events 011 (accusation), 012 (refuse) or , 013 (Escalation)
         // in the end of the sequence there is an 014 (eruption) event
 
-        Pattern<Event, ?> pattern = Pattern.<Event>begin("start").where(
+        // In this case discard all started partial matches.
+        // https://ci.apache.org/projects/flink/flink-docs-release-1.12/dev/libs/cep.html#after-match-skip-strategy
+        AfterMatchSkipStrategy skipStrategy = AfterMatchSkipStrategy.skipPastLastEvent();
+
+        Pattern<Event, ?> pattern = Pattern.<Event>begin("start", skipStrategy).where(
                 new SimpleCondition<Event>() {
                     @Override
                     public boolean filter(Event event) {
