@@ -71,7 +71,7 @@ public class Event {
     }
 
     /**
-     * Function to extract the time stamp from an event
+     * Function to extract the timestamp from an event
      */
     public static class ExtractTimestamp extends AscendingTimestampExtractor<Event> {
         @Override

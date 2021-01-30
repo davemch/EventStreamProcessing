@@ -1,7 +1,9 @@
 package kafka;
 
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import types.aggregate.AggregateAppealEvent;
+import types.Warning;
+import types.aggregate.*;
 import types.socialunrest.*;
 
 import java.util.Properties;
@@ -20,7 +22,14 @@ public class Kafka {
     public FlinkKafkaProducer<Eruption>   eruptionProducer;
 
     // Aggregate Events
-    public FlinkKafkaProducer<AggregateAppealEvent> aggregateAppealProducer;
+    public FlinkKafkaProducer<AggregateAppealEvent>     aggregateAppealProducer;
+    public FlinkKafkaProducer<AggregateAccusationEvent> aggregateAccusationProducer;
+    public FlinkKafkaProducer<AggregateRefuseEvent>     aggregateRefuseProducer;
+    public FlinkKafkaProducer<AggregateEscalationEvent> aggregateEscalationProducer;
+    public FlinkKafkaProducer<AggregateEruptionEvent>   aggregateEruptionProducer;
+
+    // Warning Events
+    public FlinkKafkaProducer<Tuple3<String, Long, Long>> warningProducer;
 
     public Kafka(String topic, String serverName, String serverLocation) {
         this.TOPIC = topic;
@@ -64,8 +73,38 @@ public class Kafka {
                 this.TOPIC,
                 new AggregateAppealEvent.Serializer(),
                 this.properties,
-                FlinkKafkaProducer.Semantic.EXACTLY_ONCE
-        );
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+
+        this.aggregateAccusationProducer = new FlinkKafkaProducer<AggregateAccusationEvent>(
+                this.TOPIC,
+                new AggregateAccusationEvent.Serializer(),
+                this.properties,
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+
+        this.aggregateRefuseProducer = new FlinkKafkaProducer<AggregateRefuseEvent>(
+                this.TOPIC,
+                new AggregateRefuseEvent.Serializer(),
+                this.properties,
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+
+        this.aggregateEscalationProducer = new FlinkKafkaProducer<AggregateEscalationEvent>(
+                this.TOPIC,
+                new AggregateEscalationEvent.Serializer(),
+                this.properties,
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+
+        this.aggregateEruptionProducer = new FlinkKafkaProducer<AggregateEruptionEvent>(
+                this.TOPIC,
+                new AggregateEruptionEvent.Serializer(),
+                this.properties,
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
+
+        // Warning Events
+        this.warningProducer = new FlinkKafkaProducer<Tuple3<String, Long, Long>>(
+                this.TOPIC,
+                new Warning.Serializer(),
+                this.properties,
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
 
         return this;
     }

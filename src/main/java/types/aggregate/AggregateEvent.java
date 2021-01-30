@@ -16,6 +16,14 @@ public abstract class AggregateEvent {
         this.amount = amount;
     }
 
+    public int getAmount() {
+        return this.amount;
+    }
+
+    public Date getDate() {
+        return this.startDate;
+    }
+
     @Override
     public String toString() {
         return String.format("{\n" +
