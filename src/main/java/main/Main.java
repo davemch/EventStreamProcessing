@@ -70,26 +70,36 @@ public class Main {
         PatternStream<Event> appealPatternStream = CEP.pattern(eventStream, Appeal.getPattern());
         DataStream<Appeal> appealDataStream = appealPatternStream.select(new Appeal.Creator());
         appealDataStream.addSink(kafka.appealProducer);
+        if (debug)
+            appealDataStream.print();
 
         // Check for Accusation Events
         PatternStream<Event> accusationPatternStream = CEP.pattern(eventStream, Accusation.getPattern());
         DataStream<Accusation> accusationDataStream = accusationPatternStream.select(new Accusation.Creator());
         accusationDataStream.addSink(kafka.accusationProducer);
+        if (debug)
+            accusationDataStream.print();
 
         // Check for Refuse Events
         PatternStream<Event> refusePatternStream = CEP.pattern(eventStream, Refuse.getPattern());
         DataStream<Refuse> refuseDataStream = refusePatternStream.select(new Refuse.Creator());
         refuseDataStream.addSink(kafka.refuseProducer);
+        if (debug)
+            refuseDataStream.print();
 
         // Check for Escalation Events
         PatternStream<Event> escalationPatternStream = CEP.pattern(eventStream, Escalation.getPattern());
         DataStream<Escalation> escalationDataStream = escalationPatternStream.select(new Escalation.Creator());
         escalationDataStream.addSink(kafka.escalationProducer);
+        if (debug)
+            escalationDataStream.print();
 
         // Check for Eruption Events
         PatternStream<Event> eruptionPatternStream = CEP.pattern(eventStream, Eruption.getPattern());
         DataStream<Eruption> eruptionDataStream = eruptionPatternStream.select(new Eruption.Creator());
         eruptionDataStream.addSink(kafka.eruptionProducer);
+        if (debug)
+            eruptionDataStream.print();
 
 
         /*
@@ -103,6 +113,8 @@ public class Main {
                 .window(TumblingEventTimeWindows.of(Time.days(AMOUNT_DAYS)))
                 .process(new AggregateAppealEvent.AggregateAppealEvents());
         aggregateAppealEventDataStream.addSink(kafka.aggregateAppealProducer);
+        if (debug)
+            aggregateAppealEventDataStream.print();
 
         // Amount of Accusation events
         DataStream<AggregateAccusationEvent> aggregateAccusationEventDataStream = accusationDataStream
@@ -110,6 +122,8 @@ public class Main {
                 .window(TumblingEventTimeWindows.of(Time.days(AMOUNT_DAYS)))
                 .process(new AggregateAccusationEvent.AggregateAccusationEvents());
         aggregateAccusationEventDataStream.addSink(kafka.aggregateAccusationProducer);
+        if (debug)
+            aggregateAccusationEventDataStream.print();
 
         // Amount of Refuse events
         DataStream<AggregateRefuseEvent> aggregateRefuseEventDataStream = refuseDataStream
@@ -117,6 +131,8 @@ public class Main {
                 .window(TumblingEventTimeWindows.of(Time.days(AMOUNT_DAYS)))
                 .process(new AggregateRefuseEvent.AggregateRefuseEvents());
         aggregateRefuseEventDataStream.addSink(kafka.aggregateRefuseProducer);
+        if (debug)
+            aggregateRefuseEventDataStream.print();
 
         // Amount of Escalation events
         DataStream<AggregateEscalationEvent> aggregateEscalationEventDataStream = escalationDataStream
@@ -124,6 +140,8 @@ public class Main {
                 .window(TumblingEventTimeWindows.of(Time.days(AMOUNT_DAYS)))
                 .process(new AggregateEscalationEvent.AggregateEscalationEvents());
         aggregateEscalationEventDataStream.addSink(kafka.aggregateEscalationProducer);
+        if (debug)
+            aggregateEscalationEventDataStream.print();
 
         // Amount of Eruption events
         DataStream<AggregateEruptionEvent> aggregateEruptionEventDataStream = eruptionDataStream
@@ -131,6 +149,8 @@ public class Main {
                 .window(TumblingEventTimeWindows.of(Time.days(AMOUNT_DAYS)))
                 .process(new AggregateEruptionEvent.AggregateEruptionEvents());
         aggregateEruptionEventDataStream.addSink(kafka.aggregateEruptionProducer);
+        if (debug)
+            aggregateEruptionEventDataStream.print();
 
 
         /*
@@ -156,6 +176,8 @@ public class Main {
                 }
         );
         appealWarning.addSink(kafka.warningProducer);
+        if (debug)
+            appealWarning.print();
 
         // Check for Accusation amount increase
         PatternStream<AggregateAccusationEvent> aggregateAccusationEventPatternStream = CEP.pattern(
@@ -175,6 +197,8 @@ public class Main {
                 }
         );
         accusationWarning.addSink(kafka.warningProducer);
+        if (debug)
+            accusationWarning.print();
 
         // Check for Refuse amount increase
         PatternStream<AggregateRefuseEvent> aggregateRefuseEventPatternStream = CEP.pattern(
@@ -194,6 +218,8 @@ public class Main {
                 }
         );
         refuseWarning.addSink(kafka.warningProducer);
+        if (debug)
+            refuseWarning.print();
 
         // Check for Escalation amount increase
         PatternStream<AggregateEscalationEvent> aggregateEscalationEventPatternStream = CEP.pattern(
@@ -213,6 +239,8 @@ public class Main {
                 }
         );
         escalationWarning.addSink(kafka.warningProducer);
+        if (debug)
+            escalationWarning.print();
 
         // Check for Eruption amount increase
         PatternStream<AggregateEruptionEvent> aggregateEruptionEventPatternStream = CEP.pattern(
@@ -232,6 +260,8 @@ public class Main {
                 }
         );
         eruptionWarning.addSink(kafka.warningProducer);
+        if (debug)
+            eruptionWarning.print();
 
 
         /*
@@ -264,34 +294,13 @@ public class Main {
                 }
         );
         complexWarnings.addSink(kafka.warningProducer);
+        if (debug)
+            complexWarnings.print();
 
 
         /*
          * Execute environment
          */
-        if (debug) {
-            // Simple Events
-            appealDataStream.print();
-            accusationDataStream.print();
-            refuseDataStream.print();
-            escalationDataStream.print();
-            eruptionDataStream.print();
-
-            // Aggregate Events
-            aggregateAppealEventDataStream.print();
-            aggregateAccusationEventDataStream.print();
-            aggregateRefuseEventDataStream.print();
-            aggregateEscalationEventDataStream.print();
-            aggregateEruptionEventDataStream.print();
-
-            // Warning Events
-            appealWarning.print();
-            accusationWarning.print();
-            refuseWarning.print();
-            escalationWarning.print();
-            eruptionWarning.print();
-            complexWarnings.print();
-        }
         env.execute("GDELT: Black-Lives-Matter");
     }
 }

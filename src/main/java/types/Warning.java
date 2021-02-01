@@ -23,7 +23,16 @@ public class Warning {
 
         @Override
         public byte[] serializeValue(Tuple3<String, Long, Long> in) {
-            return ("(" + in.f0 + ", " + in.f1 + ", " + in.f2 + ")").getBytes();
+            // TODO: To json
+            return String.format("{\n" +
+                    "\"eventDescription\": \"%s\", \n" +
+                    "\"startDate\": \"%d\", \n" +
+                    "\"endDate\": \"%d\" \n" +
+                    "}",
+                    in.f0,
+                    in.f1,
+                    in.f2).getBytes();
+            //return ("(" + in.f0 + ", " + in.f1 + ", " + in.f2 + ")").getBytes();
         }
 
         @Override

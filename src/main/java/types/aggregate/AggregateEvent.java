@@ -35,8 +35,7 @@ public abstract class AggregateEvent {
                 eventDescription,
                 startDate,
                 endDate.getTime(),
-                amount
-                );
+                amount);
     }
 
     @Override
