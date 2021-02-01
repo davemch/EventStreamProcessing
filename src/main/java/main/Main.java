@@ -169,7 +169,7 @@ public class Main {
                                              Context ctx,
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
                         // NOTE: Divide getTime() by 1000 to convert milliseconds to seconds.
-                        out.collect(new Tuple3<String, Long, Long>("Appeal-WARNING",
+                        out.collect(new Tuple3<String, Long, Long>("appeal_WARNING",
                                 pattern.get("first").get(0).getDate().getTime() / 1000,
                                 pattern.get("second").get(0).getDate().getTime() / 1000));
                     }
@@ -190,7 +190,7 @@ public class Main {
                     public void processMatch(Map<String, List<AggregateAccusationEvent>> pattern,
                                              Context ctx,
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
-                        out.collect(new Tuple3<String, Long, Long>("Accusation-WARNING",
+                        out.collect(new Tuple3<String, Long, Long>("accusation_WARNING",
                                 pattern.get("first").get(0).getDate().getTime() / 1000,
                                 pattern.get("second").get(0).getDate().getTime() / 1000));
                     }
@@ -211,7 +211,7 @@ public class Main {
                     public void processMatch(Map<String, List<AggregateRefuseEvent>> pattern,
                                              Context ctx,
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
-                        out.collect(new Tuple3<String, Long, Long>("Refuse-WARNING",
+                        out.collect(new Tuple3<String, Long, Long>("refuse_WARNING",
                                 pattern.get("first").get(0).getDate().getTime() / 1000,
                                 pattern.get("second").get(0).getDate().getTime() / 1000));
                     }
@@ -232,7 +232,7 @@ public class Main {
                     public void processMatch(Map<String, List<AggregateEscalationEvent>> pattern,
                                              Context ctx,
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
-                        out.collect(new Tuple3<String, Long, Long>("Escalation-WARNING",
+                        out.collect(new Tuple3<String, Long, Long>("escalation_WARNING",
                                 pattern.get("first").get(0).getDate().getTime() / 1000,
                                 pattern.get("second").get(0).getDate().getTime() / 1000));
                     }
@@ -253,7 +253,7 @@ public class Main {
                     public void processMatch(Map<String, List<AggregateEruptionEvent>> pattern,
                                              Context ctx,
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
-                        out.collect(new Tuple3<String, Long, Long>("Eruption-WARNING",
+                        out.collect(new Tuple3<String, Long, Long>("eruption_WARNING",
                                 pattern.get("first").get(0).getDate().getTime() / 1000,
                                 pattern.get("second").get(0).getDate().getTime() / 1000));
                     }

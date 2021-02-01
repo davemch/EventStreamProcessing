@@ -5,11 +5,11 @@
 - [X] How many fields does each line in a GDELT csv file has? 57 or 58?
   * Seems to be 61...
 
-## JSON Object send to kafka
+## JSON Objects send to kafka
 
 ```json
 {
-    "eventDescription": "appeal",
+    "eventDescription": "{appeal, refuse etc}",
     "eventCode": "010",
     "date": "1600898400000",
     "numMentions": "2",
@@ -20,15 +20,15 @@
 ```
 ```json
 {
-    "eventDescription": "eruption_aggregate",
-    "startDate": "Thu Mar 19 01:00:00 CET 2020",
+    "eventDescription": "{eruption, refuse etc}_aggregate",
+    "startDate": "1585180800000",
     "endDate": "1585180800000",
     "amount": "1"
 }
 ```
 ```json
 {
-    "eventDescription": "Refuse-WARNING",
+    "eventDescription": "{refuse, eruption etc}_WARNING",
     "startDate": "1586995200",
     "endDate": "1587600000"
 }

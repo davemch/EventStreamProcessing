@@ -33,7 +33,7 @@ public abstract class AggregateEvent {
                         "\"amount\": \"%d\" \n" +
                         "}",
                 eventDescription,
-                startDate,
+                startDate.getTime(),
                 endDate.getTime(),
                 amount);
     }
