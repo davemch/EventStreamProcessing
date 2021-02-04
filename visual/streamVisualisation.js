@@ -23,12 +23,12 @@ var eruptionData = Array();
 var eruption = 0;
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = 460 - margin.left - margin.right,
+    width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
 var svg = d3.select("#my_dataviz")
     .append("svg")
-    .attr("width", 700 + margin.left + margin.right)
+    .attr("width", 1000 + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
 
  var eruptionGraph = svg
@@ -39,7 +39,7 @@ var x = d3.scaleTime().range([0,700])
 
 
 // Add Y axis
-var y = d3.scaleLinear()    .domain([0, 2000])    .range([ height, 0 ]);
+var y = d3.scaleLinear()    .domain([0, 800])    .range([ height, 0 ]);
 
 
 function drawGraph(svg ,data) {
@@ -123,13 +123,13 @@ function updateGraph(data){
     console.log(eruptionGraph.select(".x.axis"));
     var updateContextData = eruptionGraph.selectAll("path").datum(eruptionData);
     console.log(updateContextData);
-    updateContextData.enter().append("path")
+    updateContextData.enter().append("path").attr("class", "line")
         .style("stroke", "red")
         .merge(updateContextData)
         .attr("d", function(d) { return line(d); });
     updateContextData.exit().remove();
 
-    eruptionGraph.select(".x.axis").call(d3.axisBottom(x));
+    eruptionGraph.select(".x.axis").call(d3.axisBottom(x).ticks(d3.time.week));
     eruptionGraph.select(".y.axis").call(d3.axisLeft(y));
 }
 
