@@ -26,96 +26,34 @@ var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-var eruptionGraph = d3.select("#my_dataviz")
+var svg = d3.select("#my_dataviz")
     .append("svg")
     .attr("width", 700 + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
 
-function accumulate(array, data) {
-    if(array.length === 0){
-        console.log("ZERO")
-    } else {
-        array[0].push(data)
-    }
-    array.push(data)
-}
+ var eruptionGraph = svg
+     .append("g")
+     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var x = d3.scaleTime().range([0,700])
 
 
-function getDaily (data, event){
-    var dates = d3.nest()
-        .key(function(d) {return d.date; })
-        .entries(data.filter (function (d) {
-            return d.eventDescription === event
-        }))
-    console.log(dates);
+// Add Y axis
+var y = d3.scaleLinear()    .domain([0, 2000])    .range([ height, 0 ]);
 
-    dates.forEach(function(date, index){
-        var sum = 0;
-        date.values.forEach(array => {
-            sum += +array.numMentions;
-        })
-        dates[index].sum = sum;
-    })
-
-    return dates;
-}
-
-/**
- *
- * @param {Array} data
- * @param {Integer} time
- * @returns {Array}
- */
-function averageData (data, time) {
-    var mean = Array();
-    var n= 0;
-    var sum = 0;
-    for(var i=0; i < data.length; i++){
-        sum += data[i].sum;
-        if(i !== 0 && (i % time === 0)) {
-            mean[n] = {date: data[i].key, sum: sum/time}
-            n++;
-            sum = 0;
-        }
-    }
-
-    return mean;
-}
-
-
-//READ THE DATA
-d3.json("out.json", function(data) {
-    console.log(data);
-    //drawGraph(data, "accusation", 7);
-    /*drawGraph(data ,"appeal", 7);
-    drawGraph(data ,"eruption", 7);
-    drawGraph(data ,"escalation", 7);
-    drawGraph(data ,"refuse", 7);*/
-})
 
 function drawGraph(svg ,data) {
-
-    svg
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-
+    console.log(data);
     // Add X axis --> it is a date format
-    var x = d3.scaleTime()
-        .domain(d3.extent(d => d.endDate))
-        .range([0,700])
+
+    x.domain(d3.extent(eruptionData, d => d.endDate))
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x)
             .ticks(d3.time.week));
 
-    // Add Y axis
-    var y = d3.scaleLinear()
-        .domain([0, data.amount])
-        .range([ height, 0 ]);
     svg.append("g")
         .call(d3.axisLeft(y));
-
 
     svg.append("text")
         .attr("x", (width / 4))
@@ -125,10 +63,25 @@ function drawGraph(svg ,data) {
         .style("text-decoration", "underline")
         .text("Eruption");
 
+    svg.append("path")
+        .datum(data) //Welche Daten soll die Linie plotten?
+        .attr("fill", "none")
+        .attr("stroke", "red") //Farbe der Linie
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
+            .x(function(d) { console.log(parseDate(d.endDate));
+                return x(parseDate(d.endDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
+            })
+            .y(function(d) {
+                return y(d.amount) //Wert der y-Achse
+            })
+            .curve(d3.curveLinear)
+        );
     //Zeichnen der Linie
-    addLine(svg, data, x, y, "red");
+    //addLine(svg, data, x, y, "red");
     //addLegend(svg, dataName, "red", 0)
 
+    console.log(svg);
 
 }
 
@@ -137,8 +90,20 @@ function addLegend(svg, dataName, color, offset) {
     svg.append("text").attr("x", 700 - 120).attr("y", offset).text(dataName).style("font-size", "10px").attr("alignment-baseline","middle")
 }
 
+var line = d3
+    .line()
+    .x(function(d) {
+        return x(parseDate(d.endDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
+    })
+    .y(function(d) {
+        return y(d.amount) //Wert der y-Achse
+    })
+    .curve(d3.curveLinear)
+
+
 function addLine (svg, data, x, y, color) {
     svg.append("path")
+        .attr("class", "line")
         .datum(data) //Welche Daten soll die Linie plotten?
         .attr("fill", "none")
         .attr("stroke", color) //Farbe der Linie
@@ -154,16 +119,20 @@ function addLine (svg, data, x, y, color) {
         );
 }
 
-function updateGraph() {
-    console.log(eruptionData);
-    var updateContextData = eruptionGraph.selectAll("path.line").data(eruptionData);
-    updateContextData.enter().append("path").attr("class", "line")
-        //.style("stroke", function(d) { return color(d.name); })
-        .attr("clip-path", "url(#clip)")
+function updateGraph(data){
+    console.log(eruptionGraph.select(".x.axis"));
+    var updateContextData = eruptionGraph.selectAll("path").datum(eruptionData);
+    console.log(updateContextData);
+    updateContextData.enter().append("path")
+        .style("stroke", "red")
         .merge(updateContextData)
-        .attr("d", function(d) { return line(d.values); });
+        .attr("d", function(d) { return line(d); });
     updateContextData.exit().remove();
+
+    eruptionGraph.select(".x.axis").call(d3.axisBottom(x));
+    eruptionGraph.select(".y.axis").call(d3.axisLeft(y));
 }
+
 function webSocketInvoke() {
     if ("WebSocket" in window) {
         console.log("WebSocket is supported by your Browser!");
@@ -181,13 +150,14 @@ function webSocketInvoke() {
             var splitData = value.eventDescription.split("_")
             if(splitData.length > 1){
                 if(splitData[0] === "eruption") {
-                    if(eruption === 0) {
-                        drawGraph(eruptionGraph,value);
-                        eruption = 1;
-                        eruptionData.push(value);
-                    } else {
+                    if(eruptionData.length === 2) {
+                        drawGraph(eruptionGraph,eruptionData);
                         eruptionData.push(value)
+                    } else if(eruptionData.length > 2){
+                        eruptionData.push(value);
                         updateGraph();
+                    } else {
+                        eruptionData.push(value);
                     }
 
                 }
@@ -203,3 +173,10 @@ function webSocketInvoke() {
 }
 webSocketInvoke();
 
+function initGraph(data) {
+    x.domain(d3.extent(data, function(d) { return d.endDate; }) );
+    y.domain([0,1000]);
+
+    eruptionGraph.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+    eruptionGraph.append("g").attr("class", "y axis").call(d3.axisLeft(y));
+}
