@@ -5,7 +5,16 @@ var appealData = Array();
 var escalationData = Array();
 var refuseData = Array();
 var accusationData = Array();
+var eruptionWarning = Array();
+var appealWarning = Array();
+var escalationWarning  = Array();
+var refuseWarning = Array();
+var accusationWarning = Array();
 var eruption = 0;
+
+var bisectDate = d3.bisector(function(d) { return d.startDate; }).left;
+var formatDate = d3.time.format("%d-%b");
+var formateNumber = d3.format(".1f");
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 860 - margin.left - margin.right,
@@ -153,7 +162,120 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
 }
 
 function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
-    console.log(data);
+
+    var focus = graph.append("g")
+        .style("display", "none");
+// append the x line
+    focus.append("line")
+        .attr("class", "x")
+        .style("stroke", "blue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0.5)
+        .attr("y1", 0)
+        .attr("y2", height);
+
+    // append the y line
+    focus.append("line")
+        .attr("class", "y")
+        .style("stroke", "blue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0.5)
+        .attr("x1", width)
+        .attr("x2", width);
+
+    // append the circle at the intersection
+    focus.append("circle")
+        .attr("class", "y")
+        .style("fill", "none")
+        .style("stroke", "blue")
+        .attr("r", 4);
+
+    // place the value at the intersection
+    focus.append("text")
+        .attr("class", "y1")
+        .style("stroke", "white")
+        .style("stroke-width", "3.5px")
+        .style("opacity", 0.8)
+        .attr("dx", 8)
+        .attr("dy", "-.3em");
+    focus.append("text")
+        .attr("class", "y2")
+        .attr("dx", 8)
+        .attr("dy", "-.3em");
+
+    // place the date at the intersection
+    focus.append("text")
+        .attr("class", "y3")
+        .style("stroke", "white")
+        .style("stroke-width", "3.5px")
+        .style("opacity", 0.8)
+        .attr("dx", 8)
+        .attr("dy", "1em");
+
+    focus.append("text")
+        .attr("class", "y4")
+        .attr("dx", 8)
+        .attr("dy", "1em");
+
+    // append the rectangle to capture mouse               
+    graph.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .on("mouseover", function() { focus.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", mousemove);
+
+    function mousemove() {
+        var x0 = x.invert(d3.mouse(this)[0]),
+            i = bisectDate(data, x0, 1),
+            d0 = data[i - 1],
+            d1 = data[i];
+            d = x0 - parseDate(d0.date) > parseDate(d1.date) - x0 ? d1 : d0;
+
+        focus.select("circle.y")
+            .attr("transform",
+                "translate(" + x(parseDate(d.startDate)) + "," +
+                y(d.amount) + ")");
+
+        focus.select("text.y1")
+            .attr("transform",
+                "translate(" + x(parseDate(d.startDate)) + "," +
+                y(d.amount) + ")")
+            .text(d.amount);
+
+        focus.select("text.y2")
+            .attr("transform",
+                "translate(" + x(parseDate(d.startDate)) + "," +
+                y(d.amount) + ")")
+            .text(d.amount);
+
+        focus.select("text.y3")
+            .attr("transform",
+                "translate(" + x(parseDate(d.startDate)) + "," +
+                y(d.amount) + ")")
+            .text(formatDate(parseDate(d.startDate)));
+
+        focus.select("text.y4")
+            .attr("transform",
+                "translate(" + x(parseDate(d.startDate)) + "," +
+                y(d.amount) + ")")
+            .text(formatDate(parseDate(d.startDate)));
+
+        focus.select(".x")
+            .attr("transform",
+                "translate(" + x(parseDate(d.startDate)) + "," +
+                y(d.amount) + ")")
+            .attr("y2", height - y(d.amount));
+
+        focus.select(".y")
+            .attr("transform",
+                "translate(" + width * -1 + "," +
+                y(d.amount) + ")")
+            .attr("x2", width + width);
+    }
+
     graph.selectAll("path.line").datum(data)
         .attr("d", d3
             .line()
@@ -210,33 +332,40 @@ function webSocketInvoke() {
                             break;
                         case "refuse":
                             addValueToArray(value, refuseData);
-                            if (refuseData.length === 4) {
+                            if (refuseData.length === 2) {
                                 drawGraph(refuseGraph, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse, "refuse");
-                            } else if (refuseData.length > 4) {
+                            } else if (refuseData.length > 2) {
                                 updateGraph(refuseGraph, svgRefuse, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse);
                             }
                             break;
                         case "accusation":
                             addValueToArray(value, accusationData);
-                            if (accusationData.length === 4) {
+                            if (accusationData.length === 2) {
                                 drawGraph(accusationGraph, accusationData,  xAxisAccusation, yAxisAccusation,xAccusation, yAccusation, "accusation");
-                            } else if (accusationData.length > 4) {
+                            } else if (accusationData.length > 2) {
                                 updateGraph(accusationGraph, svgAccusation, accusationData, xAxisAccusation, yAxisAccusation, xAccusation, yAccusation);
                             }
                             break;
                         case "escalation":
                             addValueToArray(value, escalationData);
-                            if (escalationData.length === 4) {
+                            if (escalationData.length === 2) {
                                 drawGraph(escalationGraph, escalationData,xAxisEscalation, yAxisEscalation, xEscalation, yEscalation, "escalation");
-                            } else if (escalationData.length > 4) {
+                            } else if (escalationData.length > 2) {
                                 updateGraph(escalationGraph, svgEscalation, escalationData, xAxisEscalation, yAxisEscalation, xEscalation, yEscalation);
                             }
                             break;
                     }
                 }
                 }
-
+            if(splitData.length > 1 && splitData[1] === "WARNING") {
+                displayWarning(value, splitData[0]);
             }
+            if(splitData[0] === "WARNING"){
+                displayAlert(value);
+            }
+            }
+
+
             webSocket.onclose = function () {
                 console.log("Connection closed");
             };
@@ -246,12 +375,15 @@ function webSocketInvoke() {
 }
 webSocketInvoke();
 
-function initGraph(data) {
-    x.domain(d3.extent(data, function(d) { return d.endDate; }) );
-    y.domain([0,1000]);
+function addWarning (value, array) {
 
-    eruptionGraph.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
-    eruptionGraph.append("g").attr("class", "y axis").call(d3.axisLeft(y));
+    if(array.length === 0) {
+        array.push(value);
+    } else {
+        if(value.startDate > array[array.length-1].startDate) {
+            array.push(value);
+        }
+    }
 }
 
 function addValueToArray (value, array) {
@@ -272,4 +404,15 @@ function addValueToArray (value, array) {
             array.push(value);
         }
     }
+}
+
+function displayWarning(warningData, warningType){
+    var p = $('<li/>')
+    $("#field" + warningType).append(p.html("Warning! " + parseDate(warningData.startDate)))
+    console.log(new Date(1588204800).toLocaleDateString("de-DE"));
+}
+
+function displayAlert(warningData){
+        var p = $('<li/>')
+        $("#fieldUnrest").append(p.html("Social Unrest Alert! " + parseDate(warningData.startDate)))
 }
