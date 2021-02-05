@@ -5,10 +5,10 @@ import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
 
 /**
  * TODO: Doc
- * Warning is a Tuple3<String, Long, Long>.
+ * Alert is a Tuple3<String, Long, Long>.
  * We have this class to put the Kafka serializer somewhere
  */
-public class Warning {
+public class Alert {
 
     /**
      * Kafka Serializer
