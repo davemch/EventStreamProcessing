@@ -78,11 +78,11 @@ public class Eruption extends SocialUnrestEvent {
     /**
      * Function to define the eventDescription and the date as key
      */
-    public static class EruptionKeySelector implements KeySelector<Eruption, Tuple2<String, Date>> {
+    public static class EruptionKeySelector implements KeySelector<Eruption, Long> {
 
         @Override
-        public Tuple2<String, Date> getKey(Eruption value) throws Exception {
-            return Tuple2.of(value.eventDescription, value.date);
+        public Long getKey(Eruption value) throws Exception {
+            return value.date.getTime();
         }
     }
 }

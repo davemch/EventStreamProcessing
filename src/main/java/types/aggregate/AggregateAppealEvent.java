@@ -18,9 +18,9 @@ public class AggregateAppealEvent extends AggregateEvent {
     /**
      * Aggregator
      */
-    public static class AggregateAppealEvents extends ProcessWindowFunction<Appeal, AggregateAppealEvent, Tuple2<String, Date>, TimeWindow> {
+    public static class AggregateAppealEvents extends ProcessWindowFunction<Appeal, AggregateAppealEvent, Long, TimeWindow> {
         @Override
-        public void process(Tuple2<String, Date> key, Context context, Iterable<Appeal> events, Collector<AggregateAppealEvent> collector) throws Exception {
+        public void process(Long key, Context context, Iterable<Appeal> events, Collector<AggregateAppealEvent> collector) throws Exception {
             int amount = 0;
 
             for (Appeal event : events) {

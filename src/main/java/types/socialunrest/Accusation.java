@@ -70,11 +70,11 @@ public class Accusation extends SocialUnrestEvent {
     /**
      * Function to define the eventDescription and the date as key
      */
-    public static class AccusationKeySelector implements KeySelector<Accusation, Tuple2<String, Date>> {
+    public static class AccusationKeySelector implements KeySelector<Accusation, Long> {
 
         @Override
-        public Tuple2<String, Date> getKey(Accusation value) throws Exception {
-            return Tuple2.of(value.eventDescription, value.date);
+        public Long getKey(Accusation value) throws Exception {
+            return value.date.getTime();
         }
     }
 }
