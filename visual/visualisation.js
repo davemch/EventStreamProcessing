@@ -18,11 +18,16 @@ http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
 Mike Bostock, Pie Chart Legend
 http://bl.ocks.org/mbostock/3888852  */
 
+
 var parseDate = d3.timeParse("%Q");
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
 width = 460 - margin.left - margin.right,
 height = 400 - margin.top - margin.bottom;
+
+var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+var formatDate = d3.time.format("%d-%b");
+var formateNumber = d3.format(".1f");
 
 function accumulate(array, data) {
   if(array.length === 0){
@@ -275,17 +280,21 @@ svg2.append("path")
 })
 
 
+
 function drawGraph(data, dataName, time) {
+
 
   var dailyData = getDaily(data, dataName)
   var svg = d3.select("#my_dataviz")
   .append("svg")
-  .attr("width", 700 + margin.left + margin.right)
+  .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
+        var focus = svg.append("g")                                
+        .style("display", "none"); 
   // Add X axis --> it is a date format
   var x = d3.scaleTime()
     .domain(d3.extent(averageData(dailyData, time), d => d.date))
@@ -314,6 +323,124 @@ function drawGraph(data, dataName, time) {
   //Zeichnen der Linie
     addLine(svg, averageData(dailyData ,time) , x, y, "red");
     //addLegend(svg, dataName, "red", 0)
+    var dataArray = averageData(dailyData ,time);
+       // append the circle at the intersection                                                
+   
+      // append the x line
+      focus.append("line")
+      .attr("class", "x")
+      .style("stroke", "blue")
+      .style("stroke-dasharray", "3,3")
+      .style("opacity", 0.5)
+      .attr("y1", 0)
+      .attr("y2", height);
+    
+    // append the y line
+    focus.append("line")
+      .attr("class", "y")
+      .style("stroke", "blue")
+      .style("stroke-dasharray", "3,3")
+      .style("opacity", 0.5)
+      .attr("x1", width)
+      .attr("x2", width);
+    
+    // append the circle at the intersection
+    focus.append("circle")
+      .attr("class", "y")
+      .style("fill", "none")
+      .style("stroke", "blue")
+      .attr("r", 4);
+    
+    // place the value at the intersection
+    focus.append("text")
+      .attr("class", "y1")
+      .style("stroke", "white")
+      .style("stroke-width", "3.5px")
+      .style("opacity", 0.8)
+      .attr("dx", 8)
+      .attr("dy", "-.3em");
+    focus.append("text")
+      .attr("class", "y2")
+      .attr("dx", 8)
+      .attr("dy", "-.3em");
+    
+    // place the date at the intersection
+    focus.append("text")
+      .attr("class", "y3")
+      .style("stroke", "white")
+      .style("stroke-width", "3.5px")
+      .style("opacity", 0.8)
+      .attr("dx", 8)
+      .attr("dy", "1em");
+  
+    focus.append("text")
+      .attr("class", "y4")
+      .attr("dx", 8)
+      .attr("dy", "1em");
+
+   // append the rectangle to capture mouse               
+   svg.append("rect")                                     
+       .attr("width", width)                              
+       .attr("height", height)                            
+       .style("fill", "none")                             
+       .style("pointer-events", "all")                    
+       .on("mouseover", function() { focus.style("display", null); })
+       .on("mouseout", function() { focus.style("display", "none"); })
+       .on("mousemove", mousemove);                       
+
+
+
+   function mousemove() {                                 
+       var x0 = x.invert(d3.mouse(this)[0]),    
+         
+           i = bisectDate(dataArray, x0, 1),                   
+           d0 = dataArray[i - 1],                              
+           d1 = dataArray[i];
+           d = x0 - parseDate(d0.date) > parseDate(d1.date) - x0 ? d1 : d0;     
+
+       focus.select("circle.y")
+      .attr("transform",
+            "translate(" + x(parseDate(d.date)) + "," +
+                           y(d.sum) + ")");
+
+  focus.select("text.y1")
+      .attr("transform",
+            "translate(" + x(parseDate(d.date)) + "," +
+                           y(d.sum) + ")")
+      .text(d.sum);
+
+  focus.select("text.y2")
+      .attr("transform",
+            "translate(" + x(parseDate(d.date)) + "," +
+                           y(d.sum) + ")")
+      .text(d.sum);
+
+  focus.select("text.y3")
+      .attr("transform",
+            "translate(" + x(parseDate(d.date)) + "," +
+                           y(d.sum) + ")")
+      .text(formatDate(parseDate(d.date)));
+
+  focus.select("text.y4")
+      .attr("transform",
+            "translate(" + x(parseDate(d.date)) + "," +
+                           y(d.sum) + ")")
+      .text(formatDate(parseDate(d.date)));
+
+  focus.select(".x")
+      .attr("transform",
+            "translate(" + x(parseDate(d.date)) + "," +
+                           y(d.sum) + ")")
+                 .attr("y2", height - y(d.sum));
+
+  focus.select(".y")
+      .attr("transform",
+            "translate(" + width * -1 + "," +
+                           y(d.sum) + ")")
+                 .attr("x2", width + width);      
+                 console.log(formateNumber(d.sum)); 
+   }                     
+   
 
 
 }
@@ -434,8 +561,8 @@ function webSocketInvoke() {
             }          */
         };
 
-        webSocket.onclose = function() {
-            console.log("Connection closed");
+        webSocket.onsum = function() {
+            console.log("Connection sumd");
         };
     } else {
         alert("WebSocket NOT supported by your Browser!");
