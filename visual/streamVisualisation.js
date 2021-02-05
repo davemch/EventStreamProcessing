@@ -8,7 +8,7 @@ var accusationData = Array();
 var eruption = 0;
 
 var bisectDate = d3.bisector(function(d) { return d.startDate; }).left;
-var formatDate = d3.time.format("%d-%b");
+var formatDate = d3.time.format("%d-%b-%Y");
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 860 - margin.left - margin.right,
@@ -381,11 +381,11 @@ function addValueToArray (value, array) {
 
 function displayWarning(warningData, warningType){
     var p = $('<li/>')
-    $("#field" + warningType).append(p.html("Warning! " + parseDate(warningData.startDate)))
+    $("#field" + warningType).append(p.html("Warning! " + formatDate(parseDate(warningData.startDate))))
     console.log(new Date(1588204800).toLocaleDateString("de-DE"));
 }
 
 function displayAlert(warningData){
         var p = $('<li/>')
-        $("#fieldUnrest").append(p.html("Social Unrest Alert! " + parseDate(warningData.startDate)))
+        $("#fieldUnrest").append(p.html("Social Unrest Alert! " + formatDate(parseDate(warningData.startDate))))
 }
