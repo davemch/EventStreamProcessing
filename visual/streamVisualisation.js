@@ -115,18 +115,8 @@ accusationGraph.append("g")
 
 function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
     console.log(data);
-    // Add X axis --> it is a date format
-/*
-    var x = d3.scaleTime()
-        .domain(d3.extent(eruptionData, d => d.endDate))
-        .range([0,700])
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x)
-            .ticks(d3.time.week));
-    console.log(xAxis.ticks(d3.time.week));
-    */
-    x.domain(d3.extent(data, d => d.endDate))
+
+    x.domain(d3.extent(data, d => d.startDate))
     graph.selectAll(".myXaxis").call(xAxis.ticks(d3.time.week));
 
     y.domain(d3.extent(data, d => d.amount))
@@ -146,8 +136,8 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
         .datum(data)
         .attr("class", "line")//Welche Daten soll die Linie plotten?
         .attr("d", d3.line()
-            .x(function(d) { console.log(x(parseDate(d.endDate)));
-                return x(parseDate(d.endDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
+            .x(function(d) {
+                return x(parseDate(d.startDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
             })
             .y(function(d) {
                 return y(d.amount) //Wert der y-Achse
@@ -162,37 +152,26 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
 
 }
 
-var line = d3
-    .line()
-    .x(function(d) {
-        return x(parseDate(d.endDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
-    })
-    .y(function(d) {
-        return y(d.amount) //Wert der y-Achse
-    })
-    .curve(d3.curveLinear)
-
 function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
-
+    console.log(data);
     graph.selectAll("path.line").datum(data)
         .attr("d", d3
             .line()
             .x(function(d) {
-                return x(parseDate(d.endDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
+                return x(parseDate(d.startDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
             })
             .y(function(d) {
                 return y(d.amount) //Wert der y-Achse
             })
             .curve(d3.curveLinear));
 
-    x.domain(d3.extent(data, d => d.endDate))
+    x.domain(d3.extent(data, d => d.startDate))
     graph.selectAll(".myXaxis").call(xAxis.ticks(d3.time.week));
 
     y.domain(d3.extent(data, d => d.amount))
     graph.selectAll(".myYaxis")
         .call(yAxis);
 
-    console.log(data);
 }
 
 function webSocketInvoke() {
@@ -211,49 +190,52 @@ function webSocketInvoke() {
             var value = JSON.parse(received_msg);
             var splitData = value.eventDescription.split("_")
             if (splitData.length > 1 && splitData[1] !== "WARNING") {
-                switch (splitData[0]) {
-                    case "eruption":
-                        addValueToArray(value, eruptionData);
-                        if (eruptionData.length === 2) {
-                            drawGraph(eruptionGraph, eruptionData, xAxisEruption, yAxisEruption, xEruption, yEruption, "eruption");
-                        } else if (eruptionData.length > 2) {
-                            updateGraph(eruptionGraph, svgEruption, eruptionData, xAxisEruption, yAxisEruption, xEruption, yEruption);
-                        }
-                        break;
-                    case "appeal":
-                        addValueToArray(value, appealData);
-                        if (appealData.length === 2) {
-                            drawGraph(appealGraph, appealData, xAxisAppeal, yAxisAppeal, xAppeal, yAppeal, "appeal");
-                        } else if (appealData.length > 2) {
-                            updateGraph(appealGraph, svgAppeal, appealData, xAxisAppeal, yAxisAppeal, xAppeal, yAppeal);
-                        }
-                        break;
-                    case "refuse":
-                        addValueToArray(value, refuseData);
-                        if (refuseData.length === 2) {
-                            drawGraph(refuseGraph, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse, "refuse");
-                        } else if (refuseData.length > 2) {
-                            updateGraph(refuseGraph, svgRefuse, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse);
-                        }
-                        break;
-                    case "accusation":
-                        addValueToArray(value, accusationData);
-                        if (accusationData.length === 2) {
-                            drawGraph(accusationGraph, accusationData,  xAxisAccusation, yAxisAccusation,xAccusation, yAccusation, "accusation");
-                        } else if (accusationData.length > 2) {
-                            updateGraph(accusationGraph, svgAccusation, accusationData, xAxisAccusation, yAxisAccusation, xAccusation, yAccusation);
-                        }
-                        break;
-                    case "escalation":
-                        addValueToArray(value, escalationData);
-                        if (escalationData.length === 2) {
-                            drawGraph(escalationGraph, escalationData,xAxisEscalation, yAxisEscalation, xEscalation, yEscalation, "escalation");
-                        } else if (escalationData.length > 2) {
-                            updateGraph(escalationGraph, svgEscalation, escalationData, xAxisEscalation, yAxisEscalation, xEscalation, yEscalation);
-                        }
-                        break;
+                if(value.startDate <= "1600300800000") {
+                    switch (splitData[0]) {
+                        case "eruption":
+                            addValueToArray(value, eruptionData);
+                            if (eruptionData.length === 2) {
+                                drawGraph(eruptionGraph, eruptionData, xAxisEruption, yAxisEruption, xEruption, yEruption, "eruption");
+                            } else if (eruptionData.length > 2) {
+                                updateGraph(eruptionGraph, svgEruption, eruptionData, xAxisEruption, yAxisEruption, xEruption, yEruption);
+                            }
+                            break;
+                        case "appeal":
+                            addValueToArray(value, appealData);
+                            if (appealData.length === 2) {
+                                drawGraph(appealGraph, appealData, xAxisAppeal, yAxisAppeal, xAppeal, yAppeal, "appeal");
+                            } else if (appealData.length > 2) {
+                                updateGraph(appealGraph, svgAppeal, appealData, xAxisAppeal, yAxisAppeal, xAppeal, yAppeal);
+                            }
+                            break;
+                        case "refuse":
+                            addValueToArray(value, refuseData);
+                            if (refuseData.length === 2) {
+                                drawGraph(refuseGraph, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse, "refuse");
+                            } else if (refuseData.length > 2) {
+                                updateGraph(refuseGraph, svgRefuse, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse);
+                            }
+                            break;
+                        case "accusation":
+                            addValueToArray(value, accusationData);
+                            if (accusationData.length === 2) {
+                                drawGraph(accusationGraph, accusationData,  xAxisAccusation, yAxisAccusation,xAccusation, yAccusation, "accusation");
+                            } else if (accusationData.length > 2) {
+                                updateGraph(accusationGraph, svgAccusation, accusationData, xAxisAccusation, yAxisAccusation, xAccusation, yAccusation);
+                            }
+                            break;
+                        case "escalation":
+                            addValueToArray(value, escalationData);
+                            if (escalationData.length === 2) {
+                                drawGraph(escalationGraph, escalationData,xAxisEscalation, yAxisEscalation, xEscalation, yEscalation, "escalation");
+                            } else if (escalationData.length > 2) {
+                                updateGraph(escalationGraph, svgEscalation, escalationData, xAxisEscalation, yAxisEscalation, xEscalation, yEscalation);
+                            }
+                            break;
                     }
                 }
+                }
+
             }
             webSocket.onclose = function () {
                 console.log("Connection closed");
@@ -273,14 +255,21 @@ function initGraph(data) {
 }
 
 function addValueToArray (value, array) {
+
     if(array.length === 0) {
         array.push(value);
-    }
-    if(array[array.length - 1].endDate === value.endDate) {
-        var int = parseInt(array[array.length - 1].amount);
-        int += parseInt(value.amount);
-        array[array.length - 1].amount = int.toString();
     } else {
-        array.push(value);
+        var added = false;
+        array.forEach(function (element, i) {
+            if(element.startDate === value.startDate) {
+                added = true;
+                var int = parseInt(element.amount);
+                int += parseInt(value.amount);
+                array[i].amount = int.toString();
+            }
+        })
+        if(!added) {
+            array.push(value);
+        }
     }
 }
