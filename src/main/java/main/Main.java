@@ -23,6 +23,8 @@ import sources.ZipLoader;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Parameters to run:
  *   --input ./downloader/files/ (or wherever you downloaded GDELT's .zip-files to)
@@ -43,7 +45,7 @@ public class Main {
         debug = Boolean.parseBoolean(parameters.get("debug"));
 
         // Setup execution environment
-        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment().setParallelism(4);
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment().setParallelism(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         // Setup Kafka
@@ -69,35 +71,35 @@ public class Main {
         // Check for Appeal Events
         PatternStream<Event> appealPatternStream = CEP.pattern(eventStream, Appeal.getPattern());
         DataStream<Appeal> appealDataStream = appealPatternStream.select(new Appeal.Creator());
-        appealDataStream.addSink(kafka.appealProducer);
+        //appealDataStream.addSink(kafka.appealProducer);
         if (debug)
             appealDataStream.print();
 
         // Check for Accusation Events
         PatternStream<Event> accusationPatternStream = CEP.pattern(eventStream, Accusation.getPattern());
         DataStream<Accusation> accusationDataStream = accusationPatternStream.select(new Accusation.Creator());
-        accusationDataStream.addSink(kafka.accusationProducer);
+        //accusationDataStream.addSink(kafka.accusationProducer);
         if (debug)
             accusationDataStream.print();
 
         // Check for Refuse Events
         PatternStream<Event> refusePatternStream = CEP.pattern(eventStream, Refuse.getPattern());
         DataStream<Refuse> refuseDataStream = refusePatternStream.select(new Refuse.Creator());
-        refuseDataStream.addSink(kafka.refuseProducer);
+        //refuseDataStream.addSink(kafka.refuseProducer);
         if (debug)
             refuseDataStream.print();
 
         // Check for Escalation Events
         PatternStream<Event> escalationPatternStream = CEP.pattern(eventStream, Escalation.getPattern());
         DataStream<Escalation> escalationDataStream = escalationPatternStream.select(new Escalation.Creator());
-        escalationDataStream.addSink(kafka.escalationProducer);
+        //escalationDataStream.addSink(kafka.escalationProducer);
         if (debug)
             escalationDataStream.print();
 
         // Check for Eruption Events
         PatternStream<Event> eruptionPatternStream = CEP.pattern(eventStream, Eruption.getPattern());
         DataStream<Eruption> eruptionDataStream = eruptionPatternStream.select(new Eruption.Creator());
-        eruptionDataStream.addSink(kafka.eruptionProducer);
+        //eruptionDataStream.addSink(kafka.eruptionProducer);
         if (debug)
             eruptionDataStream.print();
 
@@ -151,6 +153,10 @@ public class Main {
         aggregateEruptionEventDataStream.addSink(kafka.aggregateEruptionProducer);
         if (debug)
             aggregateEruptionEventDataStream.print();
+
+
+
+
 
 
         /*
@@ -296,6 +302,7 @@ public class Main {
         complexWarnings.addSink(kafka.warningProducer);
         if (debug)
             complexWarnings.print();
+
 
 
         /*

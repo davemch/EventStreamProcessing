@@ -163,7 +163,7 @@ function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
             .y(function(d) {
                 return y(d.amount) //Wert der y-Achse
             })
-            .curve(d3.curveLinear));
+            .curve(d3.curveLinear))
 
     x.domain(d3.extent(data, d => d.startDate))
     graph.selectAll(".myXaxis").call(xAxis.ticks(d3.time.week));
@@ -190,7 +190,7 @@ function webSocketInvoke() {
             var value = JSON.parse(received_msg);
             var splitData = value.eventDescription.split("_")
             if (splitData.length > 1 && splitData[1] !== "WARNING") {
-                if(value.startDate <= "1600300800000") {
+                if(value.startDate <= "1600300800000" && value.startDate >= "1587772800") {
                     switch (splitData[0]) {
                         case "eruption":
                             addValueToArray(value, eruptionData);
@@ -210,25 +210,25 @@ function webSocketInvoke() {
                             break;
                         case "refuse":
                             addValueToArray(value, refuseData);
-                            if (refuseData.length === 2) {
+                            if (refuseData.length === 4) {
                                 drawGraph(refuseGraph, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse, "refuse");
-                            } else if (refuseData.length > 2) {
+                            } else if (refuseData.length > 4) {
                                 updateGraph(refuseGraph, svgRefuse, refuseData, xAxisRefuse, yAxisRefuse, xRefuse, yRefuse);
                             }
                             break;
                         case "accusation":
                             addValueToArray(value, accusationData);
-                            if (accusationData.length === 2) {
+                            if (accusationData.length === 4) {
                                 drawGraph(accusationGraph, accusationData,  xAxisAccusation, yAxisAccusation,xAccusation, yAccusation, "accusation");
-                            } else if (accusationData.length > 2) {
+                            } else if (accusationData.length > 4) {
                                 updateGraph(accusationGraph, svgAccusation, accusationData, xAxisAccusation, yAxisAccusation, xAccusation, yAccusation);
                             }
                             break;
                         case "escalation":
                             addValueToArray(value, escalationData);
-                            if (escalationData.length === 2) {
+                            if (escalationData.length === 4) {
                                 drawGraph(escalationGraph, escalationData,xAxisEscalation, yAxisEscalation, xEscalation, yEscalation, "escalation");
-                            } else if (escalationData.length > 2) {
+                            } else if (escalationData.length > 4) {
                                 updateGraph(escalationGraph, svgEscalation, escalationData, xAxisEscalation, yAxisEscalation, xEscalation, yEscalation);
                             }
                             break;
