@@ -5,16 +5,10 @@ var appealData = Array();
 var escalationData = Array();
 var refuseData = Array();
 var accusationData = Array();
-var eruptionWarning = Array();
-var appealWarning = Array();
-var escalationWarning  = Array();
-var refuseWarning = Array();
-var accusationWarning = Array();
 var eruption = 0;
 
 var bisectDate = d3.bisector(function(d) { return d.startDate; }).left;
 var formatDate = d3.time.format("%d-%b");
-var formateNumber = d3.format(".1f");
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 860 - margin.left - margin.right,
@@ -116,15 +110,12 @@ accusationGraph.append("g")
     .attr("class", "myXaxis")
     .attr("transform", "translate(0," + height + ")")
 
-// Add Y axis
 var yAccusation = d3.scaleLinear() .range([ height, 0 ]);
 var yAxisAccusation = d3.axisLeft().scale(yAccusation);
 accusationGraph.append("g")
     .attr("class", "myYaxis");
 
 function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
-    console.log(data);
-
     x.domain(d3.extent(data, d => d.startDate))
     graph.selectAll(".myXaxis").call(xAxis.ticks(d3.time.week));
 
@@ -140,8 +131,7 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
         .style("text-decoration", "underline")
         .text(name);
 
-    graph
-        .append("path")
+    graph.append("path")
         .datum(data)
         .attr("class", "line")//Welche Daten soll die Linie plotten?
         .attr("d", d3.line()
@@ -155,16 +145,31 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
             .attr("fill", "none")
             .attr("stroke", "red") //Farbe der Linie
             .attr("stroke-width", 1.5);
-    //Zeichnen der Linie
-    //addLine(svg, data, x, y, "red");
-    //addLegend(svg, dataName, "red", 0)
 
 }
 
 function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
+    graph.selectAll("path.line").datum(data)
+        .attr("d", d3
+            .line()
+            .x(function(d) {
+                return x(parseDate(d.startDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
+            })
+            .y(function(d) {
+                return y(d.amount) //Wert der y-Achse
+            })
+            .curve(d3.curveLinear))
+
+    x.domain(d3.extent(data, d => d.startDate))
+    graph.selectAll(".myXaxis").call(xAxis.ticks(d3.time.week));
+
+    y.domain(d3.extent(data, d => d.amount))
+    graph.selectAll(".myYaxis")
+        .call(yAxis);
 
     var focus = graph.append("g")
         .style("display", "none");
+
 // append the x line
     focus.append("line")
         .attr("class", "x")
@@ -217,7 +222,7 @@ function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
         .attr("dx", 8)
         .attr("dy", "1em");
 
-    // append the rectangle to capture mouse               
+    // append the rectangle to capture mouse
     graph.append("rect")
         .attr("width", width)
         .attr("height", height)
@@ -232,7 +237,7 @@ function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
             i = bisectDate(data, x0, 1),
             d0 = data[i - 1],
             d1 = data[i];
-            d = x0 - parseDate(d0.date) > parseDate(d1.date) - x0 ? d1 : d0;
+        d = x0 - parseDate(d0.date) > parseDate(d1.date) - x0 ? d1 : d0;
 
         focus.select("circle.y")
             .attr("transform",
@@ -275,25 +280,6 @@ function updateGraph(graph, svg, data, xAxis, yAxis, x, y){
                 y(d.amount) + ")")
             .attr("x2", width + width);
     }
-
-    graph.selectAll("path.line").datum(data)
-        .attr("d", d3
-            .line()
-            .x(function(d) {
-                return x(parseDate(d.startDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
-            })
-            .y(function(d) {
-                return y(d.amount) //Wert der y-Achse
-            })
-            .curve(d3.curveLinear))
-
-    x.domain(d3.extent(data, d => d.startDate))
-    graph.selectAll(".myXaxis").call(xAxis.ticks(d3.time.week));
-
-    y.domain(d3.extent(data, d => d.amount))
-    graph.selectAll(".myYaxis")
-        .call(yAxis);
-
 }
 
 function webSocketInvoke() {
@@ -306,8 +292,6 @@ function webSocketInvoke() {
         };
 
         webSocket.onmessage = function (evt) {
-            // from the socket connection
-
             var received_msg = evt.data;
             var value = JSON.parse(received_msg);
             var splitData = value.eventDescription.split("_")
@@ -354,17 +338,16 @@ function webSocketInvoke() {
                                 updateGraph(escalationGraph, svgEscalation, escalationData, xAxisEscalation, yAxisEscalation, xEscalation, yEscalation);
                             }
                             break;
+                        }
                     }
                 }
+                if(splitData.length > 1 && splitData[1] === "WARNING") {
+                    displayWarning(value, splitData[0]);
                 }
-            if(splitData.length > 1 && splitData[1] === "WARNING") {
-                displayWarning(value, splitData[0]);
+                if(splitData[0] === "ALERT"){
+                    displayAlert(value);
+                }
             }
-            if(splitData[0] === "WARNING"){
-                displayAlert(value);
-            }
-            }
-
 
             webSocket.onclose = function () {
                 console.log("Connection closed");
@@ -375,19 +358,7 @@ function webSocketInvoke() {
 }
 webSocketInvoke();
 
-function addWarning (value, array) {
-
-    if(array.length === 0) {
-        array.push(value);
-    } else {
-        if(value.startDate > array[array.length-1].startDate) {
-            array.push(value);
-        }
-    }
-}
-
 function addValueToArray (value, array) {
-
     if(array.length === 0) {
         array.push(value);
     } else {
