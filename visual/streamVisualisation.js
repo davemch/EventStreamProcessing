@@ -286,12 +286,13 @@ function webSocketInvoke() {
     if ("WebSocket" in window) {
         console.log("WebSocket is supported by your Browser!");
         var webSocket = new WebSocket("ws://localhost:8080/", "echo-protocol");
-
+        $("#status").removeClass("noconnection").addClass("connection").attr("title", "Connection created");
         webSocket.onopen = function () {
             console.log("Connection created");
         };
 
         webSocket.onmessage = function (evt) {
+            $("#status").addClass("recive").attr("title", "Reciving Data");
             var received_msg = evt.data;
             var value = JSON.parse(received_msg);
             var splitData = value.eventDescription.split("_")
@@ -351,6 +352,7 @@ function webSocketInvoke() {
 
             webSocket.onclose = function () {
                 console.log("Connection closed");
+                $('#status').addClass("noconnection")
             };
         } else {
             alert("WebSocket NOT supported by your Browser!");

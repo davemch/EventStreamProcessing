@@ -27,6 +27,7 @@ h2{
 
 .header-title{
     width: 40%;
+    display: flex;
 }
 .header-right{
     width: 40%;
@@ -91,4 +92,19 @@ td{
 
 .alert{
     display: flex;
+}
+
+.connection{
+    color: transparent;
+    text-shadow: 0 0 0 green;
+}
+
+.noconnection{
+    color: transparent;
+    text-shadow: 0 0 0 gray;
+}
+
+.recive{
+    color: transparent;
+    text-shadow: 0 0 0 red;
 }
