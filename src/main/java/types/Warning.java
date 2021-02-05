@@ -3,8 +3,6 @@ package types;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
 
-import java.security.Key;
-
 /**
  * TODO: Doc
  * Warning is a Tuple3<String, Long, Long>.

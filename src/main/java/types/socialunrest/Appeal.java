@@ -84,11 +84,11 @@ public class Appeal extends SocialUnrestEvent {
     /**
      * Function to define the eventDescription and the date as key
      */
-    public static class AppealKeySelector implements KeySelector<Appeal, Tuple2<String, Date>> {
+    public static class AppealKeySelector implements KeySelector<Appeal, Long> {
 
         @Override
-        public Tuple2<String, Date> getKey(Appeal value) throws Exception {
-            return Tuple2.of(value.eventDescription, value.date);
+        public Long getKey(Appeal value) throws Exception {
+            return value.date.getTime();
         }
     }
 }

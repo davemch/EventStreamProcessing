@@ -69,11 +69,11 @@ public class Refuse extends SocialUnrestEvent {
     /**
      * Function to define the eventDescription and the date as key
      */
-    public static class RefuseKeySelector implements KeySelector<Refuse, Tuple2<String, Date>> {
+    public static class RefuseKeySelector implements KeySelector<Refuse, Long> {
 
         @Override
-        public Tuple2<String, Date> getKey(Refuse value) throws Exception {
-            return Tuple2.of(value.eventDescription, value.date);
+        public Long getKey(Refuse value) throws Exception {
+            return value.date.getTime();
         }
     }
 }

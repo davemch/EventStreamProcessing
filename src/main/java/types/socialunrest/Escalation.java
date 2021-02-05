@@ -69,11 +69,11 @@ public class Escalation extends SocialUnrestEvent {
     /**
      * Function to define the eventDescription and the date as key
      */
-    public static class EscalationKeySelector implements KeySelector<Escalation, Tuple2<String, Date>> {
+    public static class EscalationKeySelector implements KeySelector<Escalation, Long> {
 
         @Override
-        public Tuple2<String, Date> getKey(Escalation value) throws Exception {
-            return Tuple2.of(value.eventDescription, value.date);
+        public Long getKey(Escalation value) throws Exception {
+            return value.date.getTime();
         }
     }
 }

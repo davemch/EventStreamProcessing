@@ -19,9 +19,9 @@ public class AggregateEruptionEvent extends AggregateEvent {
     /**
      * Aggregator
      */
-    public static class AggregateEruptionEvents extends ProcessWindowFunction<Eruption, AggregateEruptionEvent, Tuple2<String, Date>, TimeWindow> {
+    public static class AggregateEruptionEvents extends ProcessWindowFunction<Eruption, AggregateEruptionEvent, Long, TimeWindow> {
         @Override
-        public void process(Tuple2<String, Date> key, Context context, Iterable<Eruption> events, Collector<AggregateEruptionEvent> collector) throws Exception {
+        public void process(Long key, Context context, Iterable<Eruption> events, Collector<AggregateEruptionEvent> collector) throws Exception {
             int amount = 0;
 
             for (Eruption event : events) {
