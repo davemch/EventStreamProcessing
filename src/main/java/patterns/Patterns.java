@@ -160,15 +160,15 @@ public class Patterns {
     /**
      * Three warnings appeared in same week
      */
-    private static Long WARNINGS_LAST_DATE_START;
-    private static Long WARNINGS_LAST_DATE_END;
-    public final static Pattern<Tuple3<String, Long, Long>, ?> WARNINGS_PATTERN =
+    private static Long ALERT_LAST_DATE_START;
+    private static Long ALERT_LAST_DATE_END;
+    public final static Pattern<Tuple3<String, Long, Long>, ?> ALERT_PATTERN =
             Pattern.<Tuple3<String, Long, Long>>begin("first").where(
                     new SimpleCondition<Tuple3<String, Long, Long>>() {
                         @Override
                         public boolean filter(Tuple3<String, Long, Long> in) throws Exception {
-                            WARNINGS_LAST_DATE_START = in.f1;
-                            WARNINGS_LAST_DATE_END = in.f2;
+                            ALERT_LAST_DATE_START = in.f1;
+                            ALERT_LAST_DATE_END = in.f2;
                             return true;
                         }
                     }
@@ -177,7 +177,7 @@ public class Patterns {
                         @Override
                         public boolean filter(Tuple3<String, Long, Long> in) throws Exception {
                             // Check timeframe
-                            return (WARNINGS_LAST_DATE_START.equals(in.f1) && WARNINGS_LAST_DATE_END.equals(in.f2));
+                            return (ALERT_LAST_DATE_START.equals(in.f1) && ALERT_LAST_DATE_END.equals(in.f2));
                         }
                     }
             ).next("third").where(
@@ -185,7 +185,7 @@ public class Patterns {
                         @Override
                         public boolean filter(Tuple3<String, Long, Long> in) throws Exception {
                             // Check timeframe
-                            return (WARNINGS_LAST_DATE_START.equals(in.f1) && WARNINGS_LAST_DATE_END.equals(in.f2));
+                            return (ALERT_LAST_DATE_START.equals(in.f1) && ALERT_LAST_DATE_END.equals(in.f2));
                         }
                     });
 }

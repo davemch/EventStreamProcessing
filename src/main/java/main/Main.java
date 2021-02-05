@@ -281,10 +281,10 @@ public class Main {
                 .union(escalationWarning)
                 .union(eruptionWarning);
 
-        // Check for warning event patterns
+        // Check for alert event patterns
         PatternStream<Tuple3<String, Long, Long>> warningsPatternStream = CEP.pattern(
                 singleWarnings,
-                Patterns.WARNINGS_PATTERN
+                Patterns.ALERT_PATTERN
         );
         DataStream<Tuple3<String, Long, Long>> complexWarnings = warningsPatternStream.process(
                 new PatternProcessFunction<Tuple3<String, Long, Long>, Tuple3<String, Long, Long>>() {
@@ -293,7 +293,7 @@ public class Main {
                                              Context ctx,
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
                         out.collect(new Tuple3<String, Long, Long>(
-                                "WARNING",
+                                "ALERT",
                                 pattern.get("first").get(0).f1,
                                 pattern.get("first").get(0).f2));
                     }

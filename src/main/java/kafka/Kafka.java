@@ -2,7 +2,7 @@ package kafka;
 
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import types.Warning;
+import types.Alert;
 import types.aggregate.*;
 import types.socialunrest.*;
 
@@ -102,7 +102,7 @@ public class Kafka {
         // Warning Events
         this.warningProducer = new FlinkKafkaProducer<Tuple3<String, Long, Long>>(
                 this.TOPIC,
-                new Warning.Serializer(),
+                new Alert.Serializer(),
                 this.properties,
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
 
