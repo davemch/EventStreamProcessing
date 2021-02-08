@@ -294,8 +294,8 @@ public class Main {
                                              Collector<Tuple3<String, Long, Long>> out) throws Exception {
                         out.collect(new Tuple3<String, Long, Long>(
                                 "ALERT",
-                                pattern.get("first").get(0).f1,
-                                pattern.get("first").get(0).f2));
+                                Long.divideUnsigned(pattern.get("first").get(0).f1, 1000),
+                                Long.divideUnsigned(pattern.get("first").get(0).f2, 1000)));
                     }
                 }
         );
