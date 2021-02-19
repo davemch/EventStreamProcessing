@@ -14,32 +14,24 @@ var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-var svgEruption = d3.select("#my_dataviz")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+var svgAppeal = d3.select("#my_dataviz")
+     .append("svg")
+     .attr("width", width + margin.left + margin.right)
+     .attr("height", height + margin.top + margin.bottom)
 
- var eruptionGraph = svgEruption
+var appealGraph = svgAppeal
      .append("g")
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var svgEscalation = d3.select("#my_dataviz")
+var svgAccusation = d3.select("#my_dataviz")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
 
-var escalationGraph = svgEscalation
+var accusationGraph = svgAccusation
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var svgAppeal = d3.select("#my_dataviz")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-
-var appealGraph = svgAppeal
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var svgRefuse = d3.select("#my_dataviz")
     .append("svg")
@@ -50,14 +42,27 @@ var refuseGraph = svgRefuse
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var svgAccusation = d3.select("#my_dataviz")
+
+var svgEscalation = d3.select("#my_dataviz")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
 
-var accusationGraph = svgAccusation
+var escalationGraph = svgEscalation
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svgEruption = d3.select("#my_dataviz")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+
+ var eruptionGraph = svgEruption
+     .append("g")
+     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+//x und y achsen
 
 var xEruption = d3.scaleTime().range([0,width]);
 var xAxisEruption = d3.axisBottom(xEruption);
@@ -133,7 +138,7 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
 
     graph.append("path")
         .datum(data)
-        .attr("class", "line")//Welche Daten soll die Linie plotten?
+        .attr("class", "line")
         .attr("d", d3.line()
             .x(function(d) {
                 return x(parseDate(d.startDate)) //Wert der x-Achse, ACHTUNG: Muss Date sein!
@@ -143,7 +148,7 @@ function drawGraph(graph ,data, xAxis, yAxis, x, y, name) {
             })
             .curve(d3.curveLinear))
             .attr("fill", "none")
-            .attr("stroke", "red") //Farbe der Linie
+            .attr("stroke", "red")
             .attr("stroke-width", 1.5);
 
 }
