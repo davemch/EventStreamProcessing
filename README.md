@@ -1,9 +1,10 @@
 # GDELT Event Processing with CEP
 
-## TODOs
+The goal of the present work was to use Apache Flink to examine the data streams of news for social unrest events from all over the world and to visualize them in a web application.  The event database of the GDELT project was used, which contains the categorization of events according to the CAMEO taxonomy. Due to the large volume of data, only the events from 04/25/2020 to 09/25/2020 from the US were considered, a period in which the Black Lives Matter movement was intense.
+The data flow is described in Figure 1
 
-- [X] How many fields does each line in a GDELT csv file has? 57 or 58?
-  * Seems to be 61...
+<center><img src="https://github.com/davemch/EventStreamProcessing/blob/master/docs/architecture.png" width="600"></center>
+<center>Figure 1. Architecture.</center>
 
 ## JSON Objects send to kafka
 
